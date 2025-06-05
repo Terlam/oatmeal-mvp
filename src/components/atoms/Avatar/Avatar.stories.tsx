@@ -22,7 +22,5 @@ export const WithImage: Story = {
 
 export const LargeDarkMode: Story = {
   args: {
-    size: 'lg',
-    darkMode: true,
   },
 };

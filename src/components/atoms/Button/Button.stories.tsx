@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button } from './Button';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Button as Button2 }  from "flowbite-react";
+
 
 const meta: Meta<typeof Button> = {
   title: 'Atoms/Button',
@@ -33,11 +35,7 @@ export const DarkMode: Story = {
 
 export const something = () => {
   return(
-    <div>
-      <button className='rounded bg-red py-7'>
-        New Button
-      </button>
-    </div>
+     <Button2 pill>Cool?</Button2>
   )
 }
 

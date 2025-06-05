@@ -1,147 +1,172 @@
-![# 🥣 Oatmeal MVP](/src/stories/assets/oatmeal_mvp.png "a title")
+# 🥣 Oatmeal MVP
 
-Because starting from scratch should be deliciously unnecessary.
+Welcome to your new favorite flavor of MVP — warm, reliable, and outrageously useful out of the box.
 
-This project isn't just a boilerplate — it's a **launchpad for ideas**, a **thoughtful system for building**, and a space where code meets clarity. Designed for speed, elegance, and repeatability, this template helps you go from zero to prototype without crying into your terminal.
+This isn’t your average boilerplate. This is **Oatmeal MVP**: a starter kit that believes in good defaults, great structure, and helping you build your next big idea without crying over CSS or authentication logic. We tossed in Next.js, Tailwind, Flowbite-React, Firebase Auth, and an atomic design system — all served hot and ready.
 
 ---
 
 ## 📚 Table of Contents
 
-- [Why This Exists](#-why-this-exists)
-- [Quick Start](#-quick-start)
-- [Project Commands](#-project-commands)
-- [Component Generator](#-component-generator)
-- [Theming & Dark Mode](#-theming--dark-mode)
-- [Roadmap](#-roadmap)
-- [Philosophy](#-philosophy)
-- [Tech Stack](#-tech-stack)
-- [Contributing](#-contributing)
+- [About](#about)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Firebase Setup](#firebase-setup)
+- [Flowbite Integration](#flowbite-integration)
+- [Project Structure](#project-structure)
+- [Scripts & Commands](#scripts--commands)
+- [Theming & Dark Mode](#theming--dark-mode)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## 💡 Why This Exists
+## 📖 About
 
-Oatmeal MVP is built for:
+Oatmeal MVP is a deliciously prepared dev environment for makers, designers, and late-night tinkerers who want to build fast and smart. With Firebase Auth, a layout system that won’t quit, and UI pieces you’ll actually reuse, this starter kit gets out of your way and lets your product shine.
 
-- Designers learning to code.
-- Developers trying to move faster.
-- Founders prototyping at midnight.
-- Anyone who’s sick of wiring up the same layout for the tenth time.
-
-This project favors **clarity over complexity**, **defaults over decisions**, and **usefulness over perfection**. If you're building something new, this template should feel like a warm bowl of productivity.
+_Think of it as oatmeal: a solid base for whatever you want to sprinkle on top — whether it’s LMS modules, event planning features, or a dashboard for your pet hamster’s crypto wallet._
 
 ---
 
-## 🚀 Quick Start
+## ⚙️ Features
+
+- 🛡 **Authentication**: Firebase Auth with Google + Email/Password.
+- 🧱 **Atomic Components**: Structured and reusable: `atoms`, `molecules`, `organisms`.
+- 🧠 **State Management**: Choose between Zustand or Context (we stay chill either way).
+- 🧩 **Layout System**: Header, Footer, Theme toggle — baked in.
+- 🌐 **Routing**: SSR + protected routes with Firebase session cookies.
+- 🎨 **Tailwind + Flowbite**: Beautiful, responsive components that respect dark mode and your brain.
+- 🧪 **Testing Stack**: Vitest, Testing Library, MSW — because real devs test things.
+- 📚 **Storybook**: Component playground, dark mode included.
+
+---
+
+## 🏁 Getting Started
+
+1. **Clone this thing**
+   ```bash
+   git clone <repo-url>
+   cd oatmeal-mvp
+   npm install
+   ```
+
+2. **Prep your .env file**
+   - Copy `.env.example` → `.env.local`
+   - Fill it in with your Firebase secrets (don’t worry, we won’t peek)
+
+3. **Run it**
+   ```bash
+   npm run dev
+   ```
+
+Then go to [http://localhost:3000](http://localhost:3000) and bask in your creation.
+
+---
+
+## 🔐 Firebase Setup
+
+You’ll need:
+- A Firebase project
+- Auth methods enabled
+- A service account JSON
+
+Here’s your five-step recipe:
+
+1. Go to [Firebase Console](https://console.firebase.google.com)
+2. Enable Email/Password and Google auth
+3. Generate a service account private key
+4. Copy it into `.env.local` like:
+   ```env
+   FIREBASE_SERVICE_ACCOUNT="{...}"
+   ```
+5. Set your `NEXT_PUBLIC_FIREBASE_*` vars from your Firebase config
+
+Need more help? Hit up the `pages/api/session.ts` for cookie management and auth context.
+
+---
+
+## 🍃 Flowbite Integration
+
+We use Flowbite-React for styled, accessible components. Tailwind drives it all. You can:
+
+- Use built-in `<Button>`, `<Input>`, `<Card>`, etc.
+- Wrap or extend in `atoms/`, `molecules/`, and beyond
+- Use their docs for inspiration or shameful copy/paste
+
+```js
+// tailwind.config.js
+module.exports = {
+  content: [
+    './src/**/*.{ts,tsx}',
+    './node_modules/flowbite-react/**/*.{ts,tsx}',
+    './node_modules/flowbite/**/*.{ts,tsx}',
+  ],
+  plugins: [require('flowbite/plugin')],
+};
+```
+
+---
+
+## 🗂 Project Structure
 
 ```bash
-npm install
-npm run dev
+src/
+├── components/
+│   ├── atoms/          # Button, Input, Label, Avatar
+│   ├── molecules/      # LoginForm, ContactForm
+│   └── organisms/      # Header, Footer, Layout
+├── contexts/           # ThemeContext, AuthContext
+├── firebase/           # clientApp.ts and admin.ts
+├── hooks/              # useAuth, useTheme
+├── pages/              # login, dashboard, index, api/session
+├── styles/             # Tailwind setup
 ```
 
-Open your browser at [http://localhost:3000](http://localhost:3000)
+---
+
+## ⚙️ Scripts & Commands
+
+| Command                   | Description                             |
+|---------------------------|-----------------------------------------|
+| `npm run dev`             | Start local dev server                  |
+| `npm run build`           | Build app for production                |
+| `npm run start`           | Start production server                 |
+| `npm run lint`            | Run ESLint                              |
+| `npm run storybook`       | Run Storybook component explorer        |
+| `npm run build-storybook` | Build static Storybook docs             |
+| `npm run gen:component`   | Scaffold an atomic design component     |
 
 ---
 
-## 🔧 Project Commands
+## 🌈 Theming & Dark Mode
 
-| Command | What It Does |
-|--------|---------------|
-| `npm run dev` | Start the dev server with Turbopack |
-| `npm run build` | Build the project for production |
-| `npm run start` | Start the production server |
-| `npm run lint` | Run ESLint |
-| `npm run storybook` | Launch Storybook UI component explorer |
-| `npm run build-storybook` | Build static Storybook |
-| `npm run gen:component` | Generate a new atomic component via script |
+We support:
+- `ThemeContext` with toggle + persisted state
+- Tailwind `dark:` tokens
+- Flowbite components that *just work*
+
+Want your app to follow system preferences or sunset times? You can extend the context and we won't stop you.
 
 ---
 
-## 🧱 Component Generator
+## 🛣 Roadmap
 
-This project includes a script to scaffold **atomic design components**. But we don’t just create files — we create context.
-
-Coming soon: prompt-based generation to help you describe what you're building before you build it.
-
-```bash
-npm run gen:component -- AlertBox molecule
-```
-
-Creates:
-
-```
-src/components/molecules/AlertBox/
-├── AlertBox.tsx
-├── index.ts
-├── AlertBox.test.tsx
-├── AlertBox.stories.tsx
-```
-
-You’ll be able to define props like `variant`, add stories, and even document intent — because good components start with good clarity.
-
----
-
-## 🎨 Theming & Dark Mode
-
-Built with Tailwind tokens and awareness of modern preferences:
-
-- `darkMode` supported via props (and soon via context)
-- Future-ready for `ThemeProvider` setup
-- Design system consistent across mobile + desktop
-- Class composition via `clsx` for clean flexibility
-
-Designers and developers should both feel at home here.
-
----
-
-## 📦 Roadmap
-
-- [x] Atomic component generator
-- [ ] Interactive prompts for component generation
-- [ ] `generate-feature` script (e.g., `auth`, `layout`, `dashboard`)
-- [ ] Full layout with responsive Header, Footer, MobileNav
-- [ ] Theme and style switching via top-level prop
-- [ ] Design system tokens
-- [ ] Storybook docs mode + visual test coverage
-- [ ] App presets: LMS, Event Planner, etc.
-
----
-
-## 🧘‍♀️ Philosophy
-
-We believe in:
-
-- 🧩 Modularity over monoliths
-- 🏎 Speed over perfection
-- ✍️ Naming things well
-- 🧑‍🎨 Building for developers *and* designers
-- 📦 Packing only what you need, and nothing you don’t
-
-Your components should feel like they belong together. Your files should feel like they were written by a thoughtful person. Your MVP should feel like it’s already halfway there the moment you clone this repo.
-
----
-
-## 🧪 Tech Stack
-
-- [Next.js 15](https://nextjs.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com)
-- [Storybook 8](https://storybook.js.org/)
-- [Vitest](https://vitest.dev/)
-- [MSW](https://mswjs.io/)
-- [Chalk](https://www.npmjs.com/package/chalk)
+- 🔜 AI-assisted feature generators
+- 🔌 Preset kits: `lms`, `event-app`, `chatbot-ui`
+- 📦 Feature registry for smart reuse
+- 🧠 One-command MVP spinups
+- 🧪 CI + snapshot testing for UI diffing
 
 ---
 
 ## 🤝 Contributing
 
-This project’s greatest feature is its potential. If you have ideas — for features, styles, structure, or interactivity — drop them in. Open a PR. Fork it. Remix it. Rename it. Make it yours.
-
-And if you rename it to `CreamOfWheat-MVP`, that’s cool too.
+We’d love your help! File an issue, PR a feature, or write a sarcastic `README` edit.
 
 ---
 
 ## 📄 License
 
-MIT. Use it, share it, build on it. Just don’t claim you invented oatmeal.
+MIT — use it, remix it, rename it to CreamOfWheat if you want. Just don’t charge people for it unless you added something amazing.
