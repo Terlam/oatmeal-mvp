@@ -7,21 +7,53 @@ export const LandingPage: React.FC = () => {
   return (
       <>
       {/* Hero Section */}
-      <section className=" bg-[url(/hero.png)] bg-blend-lighten flex-grow bg-gradient-to-br from-gray-100 to-gray-200 p-16 text-center">
-        <h1 className="text-5xl md:text-7xl font-extrabold mb-6">
-          Launch Your App, Fast and Friendly
-        </h1>
-        <p className="text-lg md:text-2xl mb-8 max-w-2xl mx-auto text-gray-700">
-          Oatmeal MVP helps you spin up a minimal viable product in minutes—no fluff,
-          just the essentials to validate your big idea and get real user feedback.
-        </p>
-        <Button size="lg" color="primary" className="mr-4 animate-bounce">
-          <Link href="/signup">Get Started</Link>
-        </Button>
-        <Button size="lg" color="light">
-          <Link href="/docs">Learn More</Link>
-        </Button>
-      </section>
+<section
+  className="
+    relative
+    flex-grow
+    flex
+    items-center
+    justify-center
+    bg-cover
+    bg-center
+    p-16
+  "
+  style={{ backgroundImage: "url('/hero.png')" }}
+>
+  {/* Overlay */}
+  <div className="absolute inset-0 bg-purple-900/60" />
+
+  {/* Text & buttons wrapper */}
+  <div className="relative z-10 max-w-2xl text-center">
+    <h1 className="
+      text-white
+      text-5xl md:text-7xl
+      font-extrabold
+      mb-6
+      drop-shadow-lg
+    ">
+      Launch Your App, Fast and Friendly
+    </h1>
+    <p className="
+      text-gray-100
+      text-lg md:text-2xl
+      mb-8
+      drop-shadow-md
+    ">
+      Oatmeal MVP helps you spin up a minimal viable product in minutes—no fluff,
+      just the essentials to validate your big idea and get real user feedback.
+    </p>
+    <div className="flex justify-center space-x-4">
+      <Button size="lg" color="primary" className="animate-bounce">
+        <Link href="/signup">Get Started</Link>
+      </Button>
+      <Button size="lg" color="light">
+        <Link href="/docs">Learn More</Link>
+      </Button>
+    </div>
+  </div>
+</section>
+
 
       {/* Feature Carousel */}
       <section id="features" className="py-16 bg-white">

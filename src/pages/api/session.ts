@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { serialize } from 'cookie'
 import { adminAuth } from '../../firebase/admin'
 
-const COOKIE_NAME = 'oatmeal-session'
+const COOKIE_NAME = '__session'
 const FIVE_DAYS_IN_MS = 5 * 24 * 60 * 60 * 1000
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -22,13 +22,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     const { token } = req.body
+      console.log('Received token in /api/session:', token?.slice(0, 20))
     if (!token) {
       return res.status(400).json({ error: 'Missing Firebase ID token' })
     }
 
     // Are we pointing at the Auth emulator?
     const isEmulator =
-      process.env.NEXT_PUBLIC_FIREBASE_USE_EMULATOR
+      process.env.NEXT_PUBLIC_FIREBASE_USE_EMULATOR === 'true'
 
     try {
       if (isEmulator) {

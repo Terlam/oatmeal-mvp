@@ -56,7 +56,27 @@ _Think of it as oatmeal: a solid base for whatever you want to sprinkle on top �
    - Copy `.env.example` → `.env.local`
    - Fill it in with your Firebase secrets (don’t worry, we won’t peek)
 
-3. **Run it**
+3. **(Optional, but recommended) Set up the Firebase Emulator for local auth**
+   - Install the Firebase CLI if you haven't:
+     ```bash
+     npm install -g firebase-tools
+     ```
+   - Initialize emulators (first time only):
+     ```bash
+     firebase init emulators
+     ```
+     - Select "Authentication" (and any other services you want).
+   - Start the emulator suite:
+     ```bash
+     firebase emulators:start
+     ```
+   - In your `.env.local`, set:
+     ```
+     NEXT_PUBLIC_FIREBASE_USE_EMULATOR=true
+     ```
+   - Your app will now use the local Firebase Auth emulator for login/signup/session cookies.
+
+4. **Run it**
    ```bash
    npm run dev
    ```

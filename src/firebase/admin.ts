@@ -1,5 +1,9 @@
 import admin from 'firebase-admin';
 
+if (process.env.NEXT_PUBLIC_FIREBASE_USE_EMULATOR === 'true') {
+  process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
+}
+
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({

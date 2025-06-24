@@ -38,6 +38,7 @@ export const useAuthStore = create<AuthState>()(
             set({ user: u, loading: false, error: null })
             if (u) {
               const token = await u.getIdToken()
+              // Set the session cookie after login or auth state change
               await fetch('/api/session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -53,7 +54,15 @@ export const useAuthStore = create<AuthState>()(
       loginWithEmail: async (email, password) => {
         set({ loading: true, error: null })
         try {
-          await signInWithEmailAndPassword(auth, email, password)
+          const cred = await signInWithEmailAndPassword(auth, email, password)
+          const token = await cred.user.getIdToken()
+          // Set the session cookie after login
+          await fetch('/api/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ token }),
+          })
         } catch (err: any) {
           set({ error: err.message })
         } finally {
@@ -64,7 +73,15 @@ export const useAuthStore = create<AuthState>()(
       loginWithGoogle: async () => {
         set({ loading: true, error: null })
         try {
-          await signInWithPopup(auth, new GoogleAuthProvider())
+          const cred = await signInWithPopup(auth, new GoogleAuthProvider())
+          const token = await cred.user.getIdToken()
+          // Set the session cookie after login
+          await fetch('/api/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ token }),
+          })
         } catch (err: any) {
           set({ error: err.message })
         } finally {
@@ -77,6 +94,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           const cred = await createUserWithEmailAndPassword(auth, email, password)
           const token = await cred.user.getIdToken()
+          // Set the session cookie after signup
           await fetch('/api/session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -94,6 +112,7 @@ export const useAuthStore = create<AuthState>()(
         set({ loading: true, error: null })
         try {
           await signOut(auth)
+          // Remove the session cookie on logout
           await fetch('/api/session', {
             method: 'DELETE',
             credentials: 'include',

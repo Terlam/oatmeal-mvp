@@ -1,0 +1,4 @@
+{
+  "dependsOn": ["Avatar", "Card", "Badge", "Button", "Accordion"],
+  "provides": ["ProfileCard", "LinkedAccounts"]
+}

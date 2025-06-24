@@ -41,16 +41,21 @@ export default Dashboard
 
 export const getServerSideProps: GetServerSideProps<DashboardProps> = async ({ req }) => {
   const token = req.cookies.__session || ''
+    console.log('SSR: __session cookie:', token?.slice(0, 20))
+  const isEmulator = process.env.NEXT_PUBLIC_FIREBASE_USE_EMULATOR === 'true'
 
   try {
-    const decoded = await adminAuth.verifyIdToken(token)
+    const decoded = isEmulator
+      ? await adminAuth.verifyIdToken(token)
+      : await adminAuth.verifySessionCookie(token, true)
     const user = {
       name: decoded.name || null,
       email: decoded.email || null,
       avatarUrl: decoded.picture || null,
     }
     return { props: { user } }
-  } catch {
+  } catch (err) {
+    console.error('SSR token verification failed:', err)
     return {
       redirect: {
         destination: '/login',

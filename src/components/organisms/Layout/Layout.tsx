@@ -16,6 +16,7 @@ import {
 import { Sun, Moon } from 'lucide-react'
 import Link from 'next/link'
 import { useAuthStore, useThemeStore } from '../../../store'
+import { useRouter } from 'next/router'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -34,8 +35,10 @@ export const Layout: React.FC<LayoutProps> = ({
   userEmail,
   userAvatarUrl,
 }) => {
+   const router = useRouter()
+
   // Auth state
-  const logout = useAuthStore((s) => s.logout)
+  const logout = useAuthStore((s) => s.logout )
 
   // Theme state (split selectors!)
   const theme = useThemeStore((s) => s.theme)
@@ -91,7 +94,7 @@ export const Layout: React.FC<LayoutProps> = ({
                   <button className="flex text-sm bg-gray-800 rounded-full focus:ring-4">
                     <span className="sr-only">User menu</span>
                     <Avatar
-                      img={userAvatarUrl || '/user.jpg'}
+                      img={userAvatarUrl || '/user_icon.png'}
                       rounded
                       size="sm"
                     />
@@ -109,7 +112,9 @@ export const Layout: React.FC<LayoutProps> = ({
                   <Link href="/settings">Settings</Link>
                 </DropdownItem>
                 <DropdownDivider />
-                <DropdownItem onClick={() => logout()}>
+                <DropdownItem onClick={async () => {
+      await logout()
+      router.push('/')}}>
                   Sign out
                 </DropdownItem>
               </Dropdown>
