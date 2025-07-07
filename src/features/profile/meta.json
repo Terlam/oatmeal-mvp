@@ -1,4 +1,4 @@
 {
-  "dependsOn": ["Avatar", "Card", "Badge", "Button", "Accordion"],
-  "provides": ["ProfileCard", "LinkedAccounts"]
+  "dependsOn": ["Avatar", "Card", "Badge", "Button", "Accordion", "ToggleSwitch", "Select"],
+  "provides": ["ProfileCard", "LinkedAccounts", "SettingsPanel", "NotificationSettings", "LanguagePreferenceForm"]
 }

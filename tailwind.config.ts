@@ -2,15 +2,16 @@
 export default {
     content: [
       './src/**/*.{js,ts,jsx,tsx}',
-      './app/**/*.{js,ts,jsx,tsx}',
+      './pages/**/*.{js,ts,jsx,tsx}',
       './components/**/*.{js,ts,jsx,tsx}',
+      './features/**/*.{js,ts,jsx,tsx}',
       './.storybook/**/*.{js,ts,jsx,tsx}',
       './stories/**/*.{js,ts,jsx,tsx}',
       './node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
       './node_modules/flowbite/**/*.{js,jsx,ts,tsx}',
     ],
     // Toggle dark-mode based on .dark class or data-mode="dark"
-    darkMode: ['class', '[data-mode="dark"]'],
+    darkMode: 'class',
     theme: {
       extend: {
         colors: {

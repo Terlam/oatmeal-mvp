@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  sendPasswordResetEmail,
   GoogleAuthProvider,
   signOut,
   User,
@@ -15,11 +16,13 @@ interface AuthState {
   user: User | null
   loading: boolean
   error: string | null
+  success: string | null
 
-  startListening: () => void
+  startListening: () => (() => void) | void
   loginWithEmail: (email: string, password: string) => Promise<void>
   loginWithGoogle: () => Promise<void>
   signupWithEmail: (email: string, password: string) => Promise<void>
+  resetPassword: (email: string) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -29,10 +32,11 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       loading: false,
       error: null,
+      success: null,
 
       startListening: () => {
         set({ loading: true })
-        onAuthStateChanged(
+        const unsubscribe = onAuthStateChanged(
           auth,
           async (u) => {
             set({ user: u, loading: false, error: null })
@@ -49,14 +53,14 @@ export const useAuthStore = create<AuthState>()(
           },
           (err) => set({ error: err.message, loading: false })
         )
+        return unsubscribe // <-- Return the unsubscribe function for cleanup
       },
 
       loginWithEmail: async (email, password) => {
-        set({ loading: true, error: null })
+        set({ loading: true, error: null, success: null })
         try {
           const cred = await signInWithEmailAndPassword(auth, email, password)
           const token = await cred.user.getIdToken()
-          // Set the session cookie after login
           await fetch('/api/session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -71,11 +75,10 @@ export const useAuthStore = create<AuthState>()(
       },
 
       loginWithGoogle: async () => {
-        set({ loading: true, error: null })
+        set({ loading: true, error: null, success: null })
         try {
           const cred = await signInWithPopup(auth, new GoogleAuthProvider())
           const token = await cred.user.getIdToken()
-          // Set the session cookie after login
           await fetch('/api/session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -90,11 +93,10 @@ export const useAuthStore = create<AuthState>()(
       },
 
       signupWithEmail: async (email, password) => {
-        set({ loading: true, error: null })
+        set({ loading: true, error: null, success: null })
         try {
           const cred = await createUserWithEmailAndPassword(auth, email, password)
           const token = await cred.user.getIdToken()
-          // Set the session cookie after signup
           await fetch('/api/session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -108,11 +110,22 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
+      resetPassword: async (email) => {
+        set({ loading: true, error: null, success: null })
+        try {
+          await sendPasswordResetEmail(auth, email)
+          set({ success: 'Password reset email sent! Please check your inbox.' })
+        } catch (err: any) {
+          set({ error: err.message })
+        } finally {
+          set({ loading: false })
+        }
+      },
+
       logout: async () => {
-        set({ loading: true, error: null })
+        set({ loading: true, error: null, success: null })
         try {
           await signOut(auth)
-          // Remove the session cookie on logout
           await fetch('/api/session', {
             method: 'DELETE',
             credentials: 'include',

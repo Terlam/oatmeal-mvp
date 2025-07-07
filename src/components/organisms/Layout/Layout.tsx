@@ -1,16 +1,10 @@
-// src/components/organisms/Layout.tsx
 import React, { useState, useEffect } from 'react'
-import clsx from 'clsx'
 import {
   Navbar,
   NavbarBrand,
   NavbarLink,
   NavbarToggle,
   NavbarCollapse,
-  Dropdown,
-  DropdownDivider,
-  DropdownHeader,
-  DropdownItem,
   Avatar,
 } from 'flowbite-react'
 import { Sun, Moon } from 'lucide-react'
@@ -35,28 +29,18 @@ export const Layout: React.FC<LayoutProps> = ({
   userEmail,
   userAvatarUrl,
 }) => {
-   const router = useRouter()
-
-  // Auth state
-  const logout = useAuthStore((s) => s.logout )
-
-  // Theme state (split selectors!)
+  const router = useRouter()
+  const logout = useAuthStore((s) => s.logout)
   const theme = useThemeStore((s) => s.theme)
   const toggle = useThemeStore((s) => s.toggle)
-
-  // Prevent icon flicker on SSR
   const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const bgClass =
-    theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'
+  useEffect(() => { setMounted(true) }, [])
 
   return (
-    <div className={clsx('flex flex-col min-h-screen transition-colors', bgClass)}>
-      <header className="shadow-md">
-        <Navbar fluid rounded>
+    <div className="flex flex-col min-h-screen transition-colors bg-white text-gray-800 dark:bg-gray-900 dark:text-white">
+      {/* Header */}
+      <header className="shadow-md transition-colors bg-white dark:bg-gray-900">
+        <Navbar fluid rounded className="bg-transparent dark:bg-transparent">
           <NavbarBrand href="/">
             <Avatar
               alt="Logo"
@@ -68,86 +52,49 @@ export const Layout: React.FC<LayoutProps> = ({
               Oatmeal MVP
             </span>
           </NavbarBrand>
-
           <div className="flex items-center md:order-2 space-x-2">
             <button
               onClick={toggle}
-              className="p-2 rounded focus:ring-2 dark:focus:ring-gray-600"
+              className="p-2 rounded focus:outline-none focus:ring-2 focus:ring-brand dark:focus:ring-yellow-400 bg-gray-200 dark:bg-gray-800 transition-colors"
               aria-label="Toggle theme"
             >
               {mounted ? (
-                theme === 'dark' ? (
-                  <Sun size={20} />
-                ) : (
-                  <Moon size={20} />
-                )
+                theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />
               ) : null}
             </button>
-
             {isLoading ? (
               <span>Loading…</span>
             ) : isLoggedIn ? (
-              <Dropdown
-                arrowIcon={false}
-                inline
-                label={
-                  <button className="flex text-sm bg-gray-800 rounded-full focus:ring-4">
-                    <span className="sr-only">User menu</span>
-                    <Avatar
-                      img={userAvatarUrl || '/user_icon.png'}
-                      rounded
-                      size="sm"
-                    />
-                  </button>
-                }
+              <button
+                onClick={async () => {
+                  await logout()
+                  router.push('/')
+                }}
+                className="ml-2 px-3 py-1 bg-blue-600 text-white rounded dark:bg-yellow-500 dark:text-gray-900 transition-colors"
               >
-                <DropdownHeader>
-                  <span className="block text-sm">{userName}</span>
-                  <span className="block truncate text-sm">{userEmail}</span>
-                </DropdownHeader>
-                <DropdownItem>
-                  <Link href="/dashboard">Dashboard</Link>
-                </DropdownItem>
-                <DropdownItem>
-                  <Link href="/settings">Settings</Link>
-                </DropdownItem>
-                <DropdownDivider />
-                <DropdownItem onClick={async () => {
-      await logout()
-      router.push('/')}}>
-                  Sign out
-                </DropdownItem>
-              </Dropdown>
+                Sign out
+              </button>
             ) : (
-              <>
-                <Link href="/login">
-                  <button className="px-3 py-1 bg-blue-600 text-white rounded">
-                    Sign in
-                  </button>
-                </Link>
-                <Link href="/signup">
-                  <button className="ml-2 px-3 py-1 border border-yellow-600 rounded">
-                    Sign up
-                  </button>
-                </Link>
-              </>
+              <button
+                onClick={() => router.push('/auth')}
+                className="ml-2 px-3 py-1 bg-blue-600 text-white rounded dark:bg-yellow-500 dark:text-gray-900 transition-colors"
+              >
+                Sign in / Sign up
+              </button>
             )}
             <NavbarToggle />
           </div>
-
           <NavbarCollapse>
             <NavbarLink href="/" active>
               Home
             </NavbarLink>
             <NavbarLink href="/about">About</NavbarLink>
-            <NavbarLink href="/contact">Contact</NavbarLink>
+            <NavbarLink href="/dashboard">Dashboard</NavbarLink>
           </NavbarCollapse>
         </Navbar>
       </header>
-
-      <main className="flex-grow container mx-auto p-4">{children}</main>
-
-      <footer className={clsx('py-6 mt-auto transition-colors', bgClass)}>
+      <main className="flex-grow container mx-auto p-4 transition-colors">{children}</main>
+      <footer className="py-6 mt-auto transition-colors bg-white dark:bg-gray-900">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
           <Link href="/" className="flex items-center mb-4 md:mb-0">
             <Avatar
@@ -157,7 +104,7 @@ export const Layout: React.FC<LayoutProps> = ({
             />
             <span className="ml-2 text-lg font-semibold">Oatmeal MVP</span>
           </Link>
-          <p className="text-sm dark:text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             © {new Date().getFullYear()} Oatmeal MVP.
           </p>
           <div className="flex space-x-4 mt-4 md:mt-0">

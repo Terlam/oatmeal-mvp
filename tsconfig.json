@@ -28,6 +28,7 @@
       "@services/*": ["src/services/*"],
       "@contexts/*": ["src/contexts/*"],
       "@firebase/*": ["src/firebase/*"],
+      "@features/*": ["src/features/*"],
     },
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "**/*.mjs", "postcss.config.cjs"],

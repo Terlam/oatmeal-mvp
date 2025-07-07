@@ -1,4 +1,3 @@
-// src/pages/settings.tsx
 import { GetServerSideProps } from 'next'
 import React from 'react'
 import { ProfileForm, ProfileData } from '@components/organisms/ProfileForm'
