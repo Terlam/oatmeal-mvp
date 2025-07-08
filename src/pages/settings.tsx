@@ -14,7 +14,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ uid }) => {
 
   const handleUpdate = async (data: ProfileData) => {
     const displayName = `${data.firstName} ${data.lastName}`.trim()
-    let photoURL = user.photoURL
+    const photoURL = user.photoURL
 
     // If you uploaded a new avatar, your ProfileForm already did that to Storage
     if (data.avatarFile) {
