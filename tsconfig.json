@@ -21,11 +21,14 @@
       }
     ],
     "paths": {
+      "@components": ["src/components"],
       "@components/*": ["src/components/*"],
       "@mock/*": ["src/mock/*"],
       "@types/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"],
       "@services/*": ["src/services/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@store/*": ["src/store/*"],
       "@contexts/*": ["src/contexts/*"],
       "@firebase/*": ["src/firebase/*"],
       "@features/*": ["src/features/*"],

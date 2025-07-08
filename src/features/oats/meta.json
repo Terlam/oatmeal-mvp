@@ -1,0 +1,17 @@
+{
+  "dependsOn": [
+    "Input",
+    "Label",
+    "Button",
+    "FileInput",
+    "Avatar",
+    "Card"
+  ],
+  "provides": [
+    "OatForm",
+    "OatActions",
+    "OatCard",
+    "PantryGrid",
+    "ScoopShelf"
+  ]
+}

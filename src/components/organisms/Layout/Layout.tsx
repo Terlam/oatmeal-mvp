@@ -77,9 +77,9 @@ export const Layout: React.FC<LayoutProps> = ({
             ) : (
               <button
                 onClick={() => router.push('/auth')}
-                className="ml-2 px-3 py-1 bg-blue-600 text-white rounded dark:bg-yellow-500 dark:text-gray-900 transition-colors"
+                className="ml-2 px-3 py-1 bg-blue-600 text-white rounded-full dark:bg-yellow-500 dark:text-gray-900 transition-colors"
               >
-                Sign in / Sign up
+                Sign in 
               </button>
             )}
             <NavbarToggle />
