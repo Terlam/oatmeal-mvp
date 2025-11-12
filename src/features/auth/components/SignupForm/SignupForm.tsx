@@ -71,7 +71,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
 
       <Card className="w-full max-w-md p-8 bg-yellow-50 dark:bg-gray-800 shadow-lg border-2 border-yellow-200 dark:border-gray-700 rounded-2xl transition-colors">
         <h2 className="text-2xl font-bold text-center text-yellow-800 dark:text-yellow-300 mb-4">
-          Create your Oatmeal account
+          Create your Postmeal account
         </h2>
 
         {(localError || error) && (

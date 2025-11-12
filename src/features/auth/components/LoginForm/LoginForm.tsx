@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Input, Button } from '@components/atoms'
+import { Card, Input, Button } from '../../../../components/atoms'
 import { FcGoogle } from 'react-icons/fc'
 import Image from 'next/image'
 
@@ -48,7 +48,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   return (
     <div className="flex flex-col items-center justify-center min-h-full px-4">
-      {/* Oatmeal Logo */}
+      {/* Postmeal Logo */}
       <div className="mb-6">
         <Image
           src="/oatmeal_light_logo.png"

@@ -1,0 +1,228 @@
+---
+description: Service layer patterns and Firebase/Firestore operations
+globs: ["**/services/**/*.ts", "**/services/**/*.tsx"]
+alwaysApply: true
+---
+
+# Service Layer Patterns & Rules
+
+## Service Layer Purpose
+- Business logic lives in services, not components
+- Firebase/Firestore operations in `features/<feature>/services/`
+- Cross-cutting services in `src/services/`
+- Services are pure functions (async/await)
+
+## Service Structure
+
+### Feature Services
+- Location: `features/<feature>/services/`
+- Naming: `<entity>Service.ts` (e.g., `postService.ts`, `authService.ts`)
+- Export: Named exports of async functions
+
+### Service File Pattern
+```typescript
+// features/<feature>/services/<entity>Service.ts
+import { collection, doc, getDocs, /* ... */ } from 'firebase/firestore'
+import { db } from '@/firebase/clientApp'
+import type { EntityType } from '../types'
+
+// Helper function to clean undefined values
+const cleanData = (data: any): any => {
+  const cleaned: any = {}
+  Object.keys(data).forEach(key => {
+    if (data[key] !== undefined && data[key] !== null) {
+      cleaned[key] = data[key]
+    }
+  })
+  return cleaned
+}
+
+// Get all entities
+export const getEntities = async (): Promise<EntityType[]> => {
+  const snapshot = await getDocs(collection(db, 'collectionName'))
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as EntityType))
+}
+
+// Get single entity
+export const getEntity = async (id: string): Promise<EntityType | null> => {
+  const docRef = doc(db, 'collectionName', id)
+  const docSnap = await getDoc(docRef)
+  return docSnap.exists() ? ({ id: docSnap.id, ...docSnap.data() } as EntityType) : null
+}
+
+// Create entity
+export const createEntity = async (
+  entity: Omit<EntityType, 'id' | 'createdAt' | 'updatedAt'>
+) => {
+  const collectionRef = collection(db, 'collectionName')
+  const cleanedEntity = cleanData(entity)
+  
+  return await addDoc(collectionRef, {
+    ...cleanedEntity,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  })
+}
+
+// Update entity
+export const updateEntity = async (id: string, data: Partial<EntityType>) => {
+  const entityRef = doc(db, 'collectionName', id)
+  const cleanedData = cleanData(data)
+  
+  return await updateDoc(entityRef, {
+    ...cleanedData,
+    updatedAt: serverTimestamp(),
+  })
+}
+
+// Delete entity
+export const deleteEntity = async (id: string) => {
+  const entityRef = doc(db, 'collectionName', id)
+  return await deleteDoc(entityRef)
+}
+```
+
+## Firebase Patterns
+
+### Firestore Operations
+- Use Firestore SDK functions: `getDocs`, `getDoc`, `addDoc`, `updateDoc`, `deleteDoc`
+- Use `serverTimestamp()` for timestamps
+- Use `increment()` for counters
+- Use `arrayUnion()` and `arrayRemove()` for arrays
+
+### Cleaning Data
+- Always clean undefined values before Firestore writes
+- Firestore doesn't accept `undefined` values
+- Use helper function to clean data
+
+### Timestamps
+```typescript
+import { serverTimestamp, Timestamp } from 'firebase/firestore'
+
+// When creating/updating
+{
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp(),
+}
+
+// In types
+export interface Entity {
+  createdAt?: Timestamp
+  updatedAt?: Timestamp
+}
+```
+
+### Batch Operations
+```typescript
+import { writeBatch } from 'firebase/firestore'
+
+export const batchOperation = async () => {
+  const batch = writeBatch(db)
+  
+  // Multiple operations
+  batch.update(doc1, { field: 'value' })
+  batch.update(doc2, { field: 'value' })
+  batch.set(doc3, { field: 'value' })
+  
+  return await batch.commit()
+}
+```
+
+## Error Handling
+
+### Service Error Patterns
+```typescript
+export const getEntity = async (id: string): Promise<EntityType | null> => {
+  try {
+    const docRef = doc(db, 'collectionName', id)
+    const docSnap = await getDoc(docRef)
+    return docSnap.exists() 
+      ? ({ id: docSnap.id, ...docSnap.data() } as EntityType) 
+      : null
+  } catch (error) {
+    console.error('Error fetching entity:', error)
+    throw error // Re-throw for component to handle
+  }
+}
+```
+
+## Query Patterns
+
+### Simple Queries
+```typescript
+import { query, where, orderBy } from 'firebase/firestore'
+
+export const getEntitiesByUser = async (userId: string): Promise<EntityType[]> => {
+  const q = query(
+    collection(db, 'collectionName'),
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc')
+  )
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as EntityType))
+}
+```
+
+### Complex Queries
+```typescript
+export const getEntitiesWithFilters = async (
+  userId?: string,
+  status?: string
+): Promise<EntityType[]> => {
+  let q = query(collection(db, 'collectionName'), orderBy('createdAt', 'desc'))
+  
+  if (userId) {
+    q = query(q, where('userId', '==', userId))
+  }
+  
+  if (status) {
+    q = query(q, where('status', '==', status))
+  }
+  
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as EntityType))
+}
+```
+
+## Service Export Pattern
+
+### Index File (Optional)
+```typescript
+// features/<feature>/services/index.ts
+export * from './postService'
+export * from './commentService'
+```
+
+## Common Service Patterns
+
+### CRUD Operations
+- `getEntities()` - Get all entities
+- `getEntity(id)` - Get single entity
+- `createEntity(data)` - Create entity
+- `updateEntity(id, data)` - Update entity
+- `deleteEntity(id)` - Delete entity
+
+### Interaction Operations
+- `likeEntity(id, userId)` - Like entity
+- `unlikeEntity(id, userId)` - Unlike entity
+- `shareEntity(id, userId, data)` - Share entity
+- `reportEntity(id, userId, reason)` - Report entity
+
+### User-Specific Operations
+- `getUserEntities(userId)` - Get user's entities
+- `getUserInteractions(userId)` - Get user's interactions
+
+## Common Mistakes to Avoid
+
+- ❌ Putting business logic in components
+- ❌ Not cleaning undefined values before Firestore writes
+- ❌ Not using `serverTimestamp()` for timestamps
+- ❌ Not handling errors properly
+- ❌ Not using batch operations for multiple writes
+- ❌ Mixing Firebase admin and client SDKs
+- ❌ Not using TypeScript types for service functions
+
+## References
+- `src/features/social/social/services/postService.ts` - Service example
+- `src/firebase/clientApp.ts` - Firebase client setup
+- `src/firebase/admin.ts` - Firebase admin setup (server-side)

@@ -11,10 +11,13 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "gen:component": "ts-node scripts/generate-component.ts",
+    "gen:feature": "ts-node scripts/generate-feature.ts",
+    "gen:ai-feature": "ts-node scripts/gen-ai-feature.ts",
     "postinstall": "flowbite-react patch"
   },
   "dependencies": {
     "@testing-library/react": "^16.3.0",
+    "axios": "^1.10.0",
     "clsx": "^2.1.1",
     "firebase": "^11.8.1",
     "firebase-admin": "^13.4.0",

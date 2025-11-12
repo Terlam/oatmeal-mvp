@@ -1,0 +1,156 @@
+---
+description: Atomic design component hierarchy and creation patterns
+globs: ["**/components/**/*.tsx", "**/components/**/*.ts", "src/components/**/*"]
+alwaysApply: true
+---
+
+# Component Creation & Atomic Design Rules
+
+## Component Hierarchy
+
+### Atoms (`src/components/atoms/`)
+- Basic UI primitives (Button, Input, Label, Avatar, Card)
+- No business logic, only UI presentation
+- Wrap/extend Flowbite components when possible
+- Should be reusable across all features
+
+### Molecules (`src/components/molecules/` or feature-specific)
+- Composed from atoms (UserCard, LoginForm, EmptyState)
+- Can contain basic interaction logic
+- Feature-specific molecules live in `features/<feature>/components/molecules/`
+
+### Organisms (`src/components/organisms/` or feature-specific)
+- Complex UI sections (Layout, DashboardGrid, ProfileForm)
+- Combine molecules and atoms
+- Feature-specific organisms live in `features/<feature>/components/organisms/`
+
+## Component Requirements
+
+Every component MUST include these files:
+1. `<ComponentName>.tsx` - Component implementation
+2. `<ComponentName>.test.tsx` - Vitest + React Testing Library tests
+3. `<ComponentName>.stories.tsx` - Storybook stories
+4. `index.ts` - Export file (exports the component)
+
+## Component Structure
+
+### File Organization
+```
+ComponentName/
+├── ComponentName.tsx
+├── ComponentName.test.tsx
+├── ComponentName.stories.tsx
+└── index.ts
+```
+
+### Component Template
+```typescript
+import React from 'react'
+import { ComponentName as FlowbiteComponent } from 'flowbite-react'
+// Or import atoms from @/components/atoms
+
+export interface ComponentNameProps {
+  // Props interface
+  children?: React.ReactNode
+  // ... other props
+}
+
+export const ComponentName: React.FC<ComponentNameProps> = ({
+  children,
+  ...props
+}) => {
+  return (
+    <div className="tailwind-classes dark:dark-classes">
+      {children}
+    </div>
+  )
+}
+```
+
+## TypeScript Conventions
+
+- Export props interface as `<ComponentName>Props`
+- Use `React.FC<Props>` or explicit function signatures
+- Prefer interfaces over types for component props
+- Use TypeScript strict mode (no `any` types)
+
+## Flowbite Integration
+
+- Wrap/extend Flowbite components when possible
+- Example: `Button` wraps `FlowbiteButton` with additional props
+- Use Flowbite's accessible components as base
+- Add custom styling via Tailwind classes
+
+## Dark Mode Support
+
+- Always support dark mode using `dark:` variants
+- Test both light and dark modes in Storybook
+- Use theme-aware colors from the "oatmeal" theme
+- Example: `bg-yellow-50 dark:bg-gray-800`
+
+## Styling Guidelines
+
+- Use Tailwind utility classes
+- Leverage Flowbite React components as base
+- Use `clsx` for conditional class names
+- Follow the "oatmeal" theme (yellow/amber color scheme)
+- Mobile-first responsive design
+
+## Component Examples
+
+### Atom Example (Button)
+```typescript
+import { Button as FlowbiteButton, Spinner } from 'flowbite-react'
+import React from 'react'
+
+export type ButtonProps = React.ComponentProps<typeof FlowbiteButton> & {
+  loading?: boolean
+}
+
+export const Button: React.FC<ButtonProps> = ({ 
+  children, 
+  loading, 
+  ...props 
+}) => (
+  <FlowbiteButton {...props} disabled={loading || props.disabled}>
+    {loading && <Spinner size="sm" className="mr-2" />}
+    {children}
+  </FlowbiteButton>
+)
+```
+
+### Molecule Example (LoginForm)
+- Located in `features/auth/components/LoginForm/`
+- Composes atoms (Button, Input, Card)
+- Contains form logic and state
+- Exports via `index.ts`
+
+## When to Create a Component
+
+1. **Atom**: Basic UI primitive needed across features
+2. **Molecule**: Composed UI pattern needed in 2+ places
+3. **Organism**: Complex section needed in feature
+4. **Feature Component**: Specific to one feature domain
+
+## Component Generation
+
+- Use `npm run gen:component` to scaffold components
+- Follow the generated structure
+- Always create test and story files
+- Export via index.ts
+
+## Common Mistakes to Avoid
+
+- ❌ Creating components without tests
+- ❌ Creating components without stories
+- ❌ Missing index.ts exports
+- ❌ Not supporting dark mode
+- ❌ Mixing business logic in atoms
+- ❌ Not using Flowbite when appropriate
+- ❌ Creating feature-specific components in shared `components/`
+
+## References
+- `src/components/atoms/Button/Button.tsx` - Atom example
+- `src/features/auth/components/LoginForm/LoginForm.tsx` - Molecule example
+- `docs/Universal_Component_Library.md` - Component suggestions
+- `scripts/generate-component.ts` - Component generation script

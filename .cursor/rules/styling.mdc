@@ -1,0 +1,223 @@
+---
+description: Tailwind CSS and Flowbite styling guidelines with dark mode support
+globs: ["**/*.tsx", "**/*.ts", "**/*.css"]
+alwaysApply: true
+---
+
+# Styling Guidelines & Tailwind CSS Rules
+
+## Styling Stack
+- **CSS Framework**: Tailwind CSS 4.x
+- **Component Library**: Flowbite React
+- **Utility**: `clsx` for conditional classes
+- **Theme**: "Oatmeal" theme (yellow/amber color scheme)
+
+## Tailwind CSS Usage
+
+### Utility Classes
+- Use Tailwind utility classes for styling
+- Prefer utility classes over custom CSS
+- Use responsive prefixes: `sm:`, `md:`, `lg:`, `xl:`, `2xl:`
+- Mobile-first approach
+
+### Class Organization
+```typescript
+// ✅ Good: Logical grouping
+className="flex items-center justify-center p-4 bg-yellow-50 dark:bg-gray-800 rounded-lg"
+
+// ✅ Better: Using clsx for conditionals
+import clsx from 'clsx'
+
+className={clsx(
+  'flex items-center justify-center p-4 rounded-lg',
+  'bg-yellow-50 dark:bg-gray-800',
+  isLoading && 'opacity-50 cursor-not-allowed',
+  variant === 'primary' && 'bg-yellow-600 hover:bg-yellow-700'
+)}
+```
+
+## Dark Mode Support
+
+### Dark Mode Classes
+- Always support dark mode using `dark:` variants
+- Test both light and dark modes
+- Use theme-aware colors
+
+### Dark Mode Pattern
+```typescript
+// ✅ Dark mode support
+<div className="bg-yellow-50 dark:bg-gray-800 text-yellow-900 dark:text-yellow-100">
+  Content
+</div>
+
+// ✅ Dark mode borders
+<div className="border-2 border-yellow-200 dark:border-gray-700">
+  Content
+</div>
+```
+
+## Flowbite Integration
+
+### Using Flowbite Components
+- Wrap/extend Flowbite components when possible
+- Pass through Flowbite props
+- Add custom styling via `className` prop
+
+### Flowbite Component Example
+```typescript
+import { Button as FlowbiteButton, Spinner } from 'flowbite-react'
+
+export const Button: React.FC<ButtonProps> = ({ 
+  children, 
+  className,
+  ...props 
+}) => (
+  <FlowbiteButton 
+    {...props}
+    className={clsx(
+      'custom-classes',
+      className
+    )}
+  >
+    {children}
+  </FlowbiteButton>
+)
+```
+
+## Oatmeal Theme Colors
+
+### Primary Colors (Yellow/Amber)
+- Light mode: `bg-yellow-50`, `bg-yellow-100`, `bg-yellow-200`, `bg-yellow-600`, `bg-yellow-700`
+- Dark mode: `dark:bg-gray-800`, `dark:bg-gray-700`, `dark:text-yellow-300`
+- Text: `text-yellow-800`, `text-yellow-900`, `dark:text-yellow-100`, `dark:text-yellow-300`
+
+### Theme Pattern
+```typescript
+// ✅ Oatmeal theme colors
+<Card className="bg-yellow-50 dark:bg-gray-800 border-2 border-yellow-200 dark:border-gray-700">
+  <h2 className="text-yellow-800 dark:text-yellow-300">Title</h2>
+  <p className="text-gray-700 dark:text-gray-300">Content</p>
+</Card>
+```
+
+## Responsive Design
+
+### Mobile-First Approach
+```typescript
+// ✅ Mobile-first: base styles for mobile, then larger breakpoints
+<div className="
+  flex flex-col
+  md:flex-row
+  lg:gap-4
+  xl:p-8
+">
+  Content
+</div>
+```
+
+### Breakpoints
+- `sm:` - 640px and up
+- `md:` - 768px and up
+- `lg:` - 1024px and up
+- `xl:` - 1280px and up
+- `2xl:` - 1536px and up
+
+## Conditional Styling
+
+### Using clsx
+```typescript
+import clsx from 'clsx'
+
+// ✅ Conditional classes
+className={clsx(
+  'base-classes',
+  isActive && 'active-classes',
+  variant === 'primary' && 'primary-classes',
+  variant === 'secondary' && 'secondary-classes',
+  className // Allow override
+)}
+```
+
+## Component Styling Patterns
+
+### Card Component
+```typescript
+<Card className="
+  w-full max-w-md p-8
+  bg-yellow-50 dark:bg-gray-800
+  shadow-lg
+  border-2 border-yellow-200 dark:border-gray-700
+  rounded-2xl
+  transition-colors
+">
+  Content
+</Card>
+```
+
+### Button Component
+```typescript
+<Button
+  className="
+    bg-yellow-600 hover:bg-yellow-700
+    text-white
+    dark:bg-yellow-500 dark:hover:bg-yellow-600
+    dark:text-gray-900
+  "
+>
+  Button Text
+</Button>
+```
+
+### Input Component
+```typescript
+<Input
+  className="
+    border-yellow-300 dark:border-gray-600
+    focus:ring-yellow-500 focus:border-yellow-500
+    dark:focus:ring-yellow-400 dark:focus:border-yellow-400
+  "
+/>
+```
+
+## Accessibility
+
+### Focus States
+- Always include focus states for interactive elements
+- Use Flowbite's accessible components
+- Test keyboard navigation
+
+### Focus Pattern
+```typescript
+// ✅ Focus states
+<button className="
+  focus:outline-none
+  focus:ring-2
+  focus:ring-yellow-500
+  focus:ring-offset-2
+">
+  Button
+</button>
+```
+
+## Common Styling Mistakes
+
+- ❌ Not supporting dark mode
+- ❌ Using custom CSS when Tailwind utilities exist
+- ❌ Not using mobile-first approach
+- ❌ Not testing responsive design
+- ❌ Missing focus states
+- ❌ Not using clsx for conditional classes
+- ❌ Hardcoding colors instead of using theme colors
+
+## Global Styles
+
+### Global CSS
+- Global styles in `src/styles/globals.css`
+- Use Tailwind directives: `@tailwind base`, `@tailwind components`, `@tailwind utilities`
+- Custom CSS only when necessary
+
+## References
+- `tailwind.config.ts` - Tailwind configuration
+- `src/styles/globals.css` - Global styles
+- `src/components/atoms/Button/Button.tsx` - Styling example
+- `src/features/auth/components/LoginForm/LoginForm.tsx` - Theme example

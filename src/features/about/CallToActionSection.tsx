@@ -7,7 +7,7 @@ export const CallToActionSection = () => (
         Ready to Build <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand via-yellow-500 to-brand-dark dark:from-yellow-400 dark:to-yellow-600">Something Weirdly Useful?</span>
       </h2>
       <p className="mb-2 text-gray-700 dark:text-gray-200 text-lg sm:text-xl font-medium">
-        Oatmeal MVP gets you from idea to launch <span className="font-semibold text-brand dark:text-yellow-300">fast</span>.<br />
+        Postmeal MVP gets you from idea to launch <span className="font-semibold text-brand dark:text-yellow-300">fast</span>.<br />
         Ship your next project with a beautiful, flexible starter kit.
       </p>
       <ul className="mb-4 text-left text-gray-600 dark:text-gray-300 text-base sm:text-lg space-y-2 w-full max-w-md mx-auto">

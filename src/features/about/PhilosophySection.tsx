@@ -7,7 +7,7 @@ export const PhilosophySection = () => (
         🥄 The Philosophy
       </h2>
       <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-200 font-medium">
-        Oatmeal MVP is for makers who want to <span className="font-semibold text-brand dark:text-yellow-300">ship fast</span> and have fun doing it.
+        Postmeal MVP is for makers who want to <span className="font-semibold text-brand dark:text-yellow-300">ship fast</span> and have fun doing it.
       </p>
       <ul className="mb-4 text-left text-gray-600 dark:text-gray-300 text-base sm:text-lg space-y-2 w-full max-w-md mx-auto">
         <li className="flex items-center gap-2">

@@ -1,0 +1,90 @@
+---
+description: Domain-driven design principles, feature-first architecture, and isolation rules
+globs: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
+alwaysApply: true
+---
+
+# Architecture & Domain-Driven Design Rules
+
+## Core Principles
+
+### Feature-First Architecture
+- Features are self-contained bounded contexts in `src/features/<feature-name>/`
+- Each feature is a domain slice with isolated concerns
+- Features should NOT import from sibling features directly
+- Shared logic goes in `src/services/` or `src/components/`
+- Reference: `docs/domain_driven_guidelines.MD`
+
+### Feature Structure
+Every feature MUST follow this structure:
+```
+features/<feature-name>/
+├── components/          # Feature-specific molecules/organisms
+│   ├── molecules/       # Composed from atoms
+│   └── organisms/       # Complex UI sections
+├── services/            # Feature-specific business logic
+├── hooks/               # Feature-specific React hooks
+├── pages/               # Feature page components
+├── types.ts             # Feature domain types
+├── index.ts             # Feature exports
+└── meta.json            # Feature metadata (optional)
+```
+
+### Isolation Rules
+- ❌ NEVER import from sibling features: `features/auth` cannot import from `features/social`
+- ✅ DO import from shared locations: `@/components`, `@/services`, `@/store`
+- ✅ DO extract shared components to `src/components/` when 2+ features need them
+- ✅ DO place cross-cutting logic in `src/services/`
+
+### Page Structure
+- Next.js pages in `src/pages/` are thin wrappers
+- Feature-specific pages live in `features/<feature>/pages/`
+- Pages should be minimal and delegate to feature components
+
+### State Management
+- Use Zustand stores in `src/store/` for global state
+- Feature-specific state can live in feature hooks or local component state
+- Firebase auth state uses `@/store/authStore`
+
+## When Creating a New Feature
+
+1. Use `npm run gen:feature <FeatureName>` to scaffold
+2. Follow the generated structure exactly
+3. Co-locate tests, stories, and components
+4. Export types from `types.ts`
+5. Export services from `services/`
+6. Export components via `index.ts` files
+
+## Common Mistakes to Avoid
+
+- ❌ Creating cross-feature dependencies
+- ❌ Putting feature-specific code in `src/components/` (unless truly shared)
+- ❌ Mixing domain logic with UI components
+- ❌ Creating circular dependencies between features
+- ❌ Putting business logic directly in components (use services)
+
+## Example Feature Pattern
+
+```typescript
+// features/auth/types.ts
+export interface User {
+  id: string
+  email: string
+  // ...
+}
+
+// features/auth/services/authService.ts
+export const loginUser = async (email: string, password: string) => {
+  // Business logic here
+}
+
+// features/auth/components/LoginForm/LoginForm.tsx
+import { Button, Input } from '@/components/atoms'
+import { loginUser } from '../../services/authService'
+// Component implementation
+```
+
+## References
+- `docs/domain_driven_guidelines.MD` - Full architecture guidelines
+- `src/features/auth/` - Example feature implementation
+- `scripts/generate-feature.ts` - Feature generation script

@@ -1,16 +1,16 @@
 import { Avatar as FlowbiteAvatar } from 'flowbite-react'
 import React from 'react'
-import { useUserAvatar } from '../../../hooks/useUserAvatar'
 
 interface AvatarProps {
   src?: string
   alt?: string
-  userId?: string
+  size?: 'sm' | 'md' | 'lg'
+  rounded?: boolean
+  className?: string
 }
 
-export const Avatar: React.FC<AvatarProps> = ({ src, alt, userId }) => {
-  const userAvatarUrl = useUserAvatar(userId)
-  const avatarSrc = src || userAvatarUrl
-
-  return <FlowbiteAvatar img={avatarSrc} rounded={true} alt={alt} />
+export const Avatar: React.FC<AvatarProps> = ({ src, alt, size = 'md', rounded = true, className }) => {
+  return (
+    <FlowbiteAvatar img={src} alt={alt} size={size} rounded={rounded} className={className} />
+  )
 }

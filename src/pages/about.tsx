@@ -1,5 +1,8 @@
 import React from "react";
-import { PhilosophySection, ToolListSection, CallToActionSection, OriginStorySection} from "@features/about";
+import { PhilosophySection } from "../features/about/PhilosophySection";
+import { ToolListSection } from "../features/about/ToolListSection";
+import { CallToActionSection } from "../features/about/CallToActionSection";
+import { OriginStorySection } from "../features/about/OriginStorySection";
 
 const AboutPage = () => {
   return (

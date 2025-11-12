@@ -16,7 +16,7 @@ export const Default: Story = {
 export const WithImage: Story = {
   args: {
     src: 'https://i.pravatar.cc/150?img=3',
-    alt: 'Oaty McOatface',
+    alt: 'Posty McPostface',
   },
 };
 

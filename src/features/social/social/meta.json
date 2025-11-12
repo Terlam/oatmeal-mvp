@@ -1,0 +1,17 @@
+{
+  "dependsOn": [
+    "Input",
+    "Label",
+    "Button",
+    "FileInput",
+    "Avatar",
+    "Card"
+  ],
+  "provides": [
+    "PostForm",
+    "PostActions",
+    "PostCard",
+    "FeedGrid",
+    "SavedPosts"
+  ]
+}

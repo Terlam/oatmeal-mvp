@@ -139,7 +139,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'oatmeal-auth',
+      name: 'postmeal-auth',
       partialize: (state) => ({ user: state.user }),
     }
   )

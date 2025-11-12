@@ -1,0 +1,219 @@
+---
+description: Testing standards with Vitest, React Testing Library, Storybook, and MSW
+globs: ["**/*.test.tsx", "**/*.test.ts", "**/*.spec.tsx", "**/*.spec.ts", "**/*.stories.tsx"]
+alwaysApply: true
+---
+
+# Testing Standards & Rules
+
+## Testing Stack
+- **Unit Tests**: Vitest + React Testing Library
+- **Mock API**: MSW (Mock Service Worker)
+- **Visual Tests**: Storybook 8.x
+- **Test Files**: Co-located with components (`ComponentName.test.tsx`)
+
+## Test File Requirements
+
+Every component MUST have a test file:
+- Location: Same directory as component
+- Naming: `<ComponentName>.test.tsx`
+- Framework: Vitest + React Testing Library
+
+## Test Structure
+
+### Component Test Template
+```typescript
+import { render, screen } from '@testing-library/react'
+import { ComponentName } from './ComponentName'
+import { describe, it, expect } from 'vitest'
+
+describe('ComponentName', () => {
+  it('renders with required props', () => {
+    render(<ComponentName prop1="value" />)
+    expect(screen.getByText('expected text')).toBeInTheDocument()
+  })
+
+  it('handles user interactions', () => {
+    // Test user interactions
+  })
+
+  it('supports dark mode', () => {
+    // Test dark mode variants
+  })
+})
+```
+
+## Testing Patterns
+
+### Rendering Tests
+```typescript
+it('renders correctly', () => {
+  render(<Component prop="value" />)
+  expect(screen.getByRole('button')).toBeInTheDocument()
+})
+```
+
+### Interaction Tests
+```typescript
+it('handles click events', async () => {
+  const handleClick = vi.fn()
+  render(<Component onClick={handleClick} />)
+  
+  fireEvent.click(screen.getByRole('button'))
+  expect(handleClick).toHaveBeenCalledTimes(1)
+})
+```
+
+### Async Tests
+```typescript
+it('handles async operations', async () => {
+  render(<Component />)
+  
+  await waitFor(() => {
+    expect(screen.getByText('Loaded')).toBeInTheDocument()
+  })
+})
+```
+
+## MSW (Mock Service Worker)
+
+### Mocking API Calls
+- Use MSW for mocking API requests
+- Mock handlers in `src/mock/handlers.ts`
+- Setup browser mocks in `src/mock/browser.ts`
+
+### Example MSW Handler
+```typescript
+// src/mock/handlers.ts
+import { http, HttpResponse } from 'msw'
+
+export const handlers = [
+  http.get('/api/posts', () => {
+    return HttpResponse.json([{ id: '1', title: 'Test' }])
+  }),
+]
+```
+
+## Storybook Stories
+
+### Story Requirements
+Every component MUST have a Storybook story:
+- Location: Same directory as component
+- Naming: `<ComponentName>.stories.tsx`
+- Framework: Storybook 8.x
+
+### Story Template
+```typescript
+import type { Meta, StoryObj } from '@storybook/react'
+import { ComponentName } from './ComponentName'
+
+const meta: Meta<typeof ComponentName> = {
+  title: 'Category/ComponentName',
+  component: ComponentName,
+  tags: ['autodocs'],
+}
+
+export default meta
+type Story = StoryObj<typeof ComponentName>
+
+export const Default: Story = {
+  args: {
+    prop1: 'value',
+  },
+}
+
+export const DarkMode: Story = {
+  args: {
+    prop1: 'value',
+  },
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
+}
+```
+
+### Story Variants
+- Create stories for different states (default, loading, error)
+- Create stories for dark mode
+- Create stories for different sizes/variants
+- Use `tags: ['autodocs']` for auto-generated docs
+
+## Testing Best Practices
+
+### What to Test
+- ✅ Component renders correctly
+- ✅ User interactions (clicks, form submissions)
+- ✅ Props are passed correctly
+- ✅ Conditional rendering
+- ✅ Error states
+- ✅ Loading states
+- ✅ Dark mode variants (when applicable)
+
+### What Not to Test
+- ❌ Implementation details
+- ❌ Third-party library internals
+- ❌ CSS styles (test behavior, not styling)
+
+## Test Organization
+
+### Feature Tests
+- Feature-specific tests can live in `features/<feature>/__tests__/`
+- Or co-located with feature components
+
+### Service Tests
+- Service tests should test business logic
+- Mock Firebase/Firestore calls
+- Test error handling
+
+### Hook Tests
+- Test custom hooks with `@testing-library/react-hooks`
+- Test state changes and side effects
+
+## Dark Mode Testing
+
+### Storybook Dark Mode
+```typescript
+export const DarkMode: Story = {
+  args: { /* props */ },
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
+}
+```
+
+### Component Dark Mode Tests
+```typescript
+it('renders correctly in dark mode', () => {
+  // Test dark mode classes are applied
+  render(<Component />, { wrapper: DarkModeWrapper })
+})
+```
+
+## Common Mistakes to Avoid
+
+- ❌ Missing test files for components
+- ❌ Missing Storybook stories
+- ❌ Testing implementation details
+- ❌ Not testing dark mode variants
+- ❌ Not mocking API calls in tests
+- ❌ Not testing error states
+- ❌ Not testing loading states
+
+## Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Run Storybook
+npm run storybook
+```
+
+## References
+- `src/components/atoms/Button/Button.test.tsx` - Test example
+- `src/components/atoms/Button/Button.stories.tsx` - Story example
+- `src/mock/handlers.ts` - MSW handlers
+- `vitest.config.ts` - Vitest configuration

@@ -1,8 +1,8 @@
 import React from 'react'
 import { NextPage, GetServerSideProps } from 'next'
-import { adminAuth } from '@firebase/admin'
+import { adminAuth } from '@firebase'
 import Link from 'next/link'
-import { Avatar } from '@components/atoms'
+import { Avatar } from '@components/atoms/Avatar'
 import { ArrowRight } from 'lucide-react'
 
 interface DashboardProps {
@@ -38,7 +38,7 @@ const Dashboard: NextPage<DashboardProps> = ({ user }) => {
     <div className="p-4 sm:p-8 max-w-2xl mx-auto">
       <div className="flex items-center mb-6">
         <Avatar
-          src={user.avatarUrl || '/user_icon.png'}
+          src={'/user_icon.png'}
           alt={displayName}
           className="mr-4 w-14 h-14"
         />

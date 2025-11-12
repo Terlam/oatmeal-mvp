@@ -2,12 +2,85 @@
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../../.flowbite-react/class-list.json";
 
+/* --- Font and Color Scheme --- */
+
+:root {
+  --font-primary: 'Quicksand', 'Nunito', 'Inter', system-ui, sans-serif;
+  --brand: #f59e42;
+  --brand-dark: #b45309;
+  --brand-accent: #60a5fa;
+  --brand-night: #ffe066;
+}
+
+html, body {
+  font-family: var(--font-primary);
+  background-color: #fff;
+  color: #222;
+  transition: background 0.2s, color 0.2s;
+}
+
+.dark html, .dark body {
+  background-color: #18181b;
+  color: #f3f4f6;
+}
+
+/* Utility for fun headings */
+.fun-heading {
+  font-family: 'Quicksand', 'Nunito', 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
 @layer utilities {
   .animate-fade-in {
     animation: fadeIn 0.3s ease;
+  }
+  .animate-float-slow {
+    animation: floatSlow 4s ease-in-out infinite alternate;
+  }
+  .animate-float-slower {
+    animation: floatSlower 7s ease-in-out infinite alternate;
+  }
+  .animate-spwoo-bounce {
+    animation: spwooBounce 1.8s cubic-bezier(0.68,-0.55,0.27,1.55) infinite alternate;
+  }
+  .animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradientX 3s ease-in-out infinite alternate;
+  }
+  .animate-glow {
+    box-shadow: 0 0 24px 4px #f59e42, 0 0 48px 8px #a78bfa33;
+    animation: glowPulse 2.5s ease-in-out infinite alternate;
   }
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(16px);}
   to { opacity: 1; transform: translateY(0);}
+}
+@keyframes floatSlow {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-16px); }
+}
+@keyframes floatSlower {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-32px); }
+}
+@keyframes spwooBounce {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-18px) scale(1.04); }
+  100% { transform: translateY(0) scale(1); }
+}
+@keyframes gradientX {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 24px 4px #f59e42, 0 0 48px 8px #a78bfa33; }
+  100% { box-shadow: 0 0 36px 8px #f59e42, 0 0 64px 16px #a78bfa33; }
+}
+@keyframes spwoo-peek {
+  0% { transform: translateY(80%); opacity: 0; }
+  10% { transform: translateY(0%); opacity: 1; }
+  80% { transform: translateY(0%); opacity: 1; }
+  100% { transform: translateY(80%); opacity: 0; }
 }

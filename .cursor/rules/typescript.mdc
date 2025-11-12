@@ -1,0 +1,220 @@
+---
+description: TypeScript conventions, strict mode, and type safety rules
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: true
+---
+
+# TypeScript Conventions & Rules
+
+## Strict Mode
+- TypeScript strict mode is enabled (`strict: true` in tsconfig.json)
+- No `any` types allowed (use `unknown` if needed)
+- All variables must be explicitly typed or inferred
+- No implicit any types
+
+## Type Definitions
+
+### Component Props
+- Use interfaces for component props: `export interface ComponentNameProps`
+- Prefer interfaces over types for component props
+- Export props interfaces for reusability
+
+### Feature Types
+- Feature-specific types live in `features/<feature>/types.ts`
+- Use `Timestamp` from `firebase/firestore` for dates
+- Export all feature types from `types.ts`
+
+### Shared Types
+- Global/shared types go in `src/types/`
+- Use `ApiResponse<T>` pattern for API responses
+- Use generic types for reusable patterns
+
+## Type Patterns
+
+### Component Props Pattern
+```typescript
+export interface ComponentNameProps {
+  required: string
+  optional?: number
+  children?: React.ReactNode
+  onChange?: (value: string) => void
+  className?: string
+}
+```
+
+### Service Function Pattern
+```typescript
+export const serviceFunction = async (
+  param1: string,
+  param2: number
+): Promise<ReturnType> => {
+  // Implementation
+}
+```
+
+### Firebase Types
+```typescript
+import { Timestamp } from 'firebase/firestore'
+
+export interface Post {
+  id?: string
+  title: string
+  content: string
+  createdAt?: Timestamp
+  updatedAt?: Timestamp
+}
+```
+
+## Path Aliases
+
+Use TypeScript path aliases from `tsconfig.json`:
+- `@/components` → `src/components`
+- `@/features` → `src/features`
+- `@/store` → `src/store`
+- `@/firebase` → `src/firebase`
+- `@/utils` → `src/utils`
+- `@/hooks` → `src/hooks`
+- `@/services` → `src/services`
+- `@/types` → `src/types`
+
+## Import Patterns
+
+### Preferred Imports
+```typescript
+// ✅ Absolute imports with path aliases
+import { Button } from '@/components/atoms'
+import { useAuthStore } from '@/store/authStore'
+import { Post } from '@/features/social/social/types'
+
+// ❌ Relative imports (avoid when possible)
+import { Button } from '../../../components/atoms/Button'
+```
+
+### Import Order
+1. React and React-related
+2. Third-party libraries
+3. Flowbite components
+4. Internal absolute imports (`@/`)
+5. Relative imports
+6. Types (can be at end with `import type`)
+
+## Type Safety Rules
+
+### No `any` Types
+```typescript
+// ❌ Bad
+const data: any = getData()
+
+// ✅ Good
+const data: unknown = getData()
+// Or better: define proper type
+const data: MyDataType = getData()
+```
+
+### Function Return Types
+```typescript
+// ✅ Explicit return types for async functions
+export const fetchData = async (): Promise<Data[]> => {
+  // Implementation
+}
+
+// ✅ Void functions
+export const handleClick = (): void => {
+  // Implementation
+}
+```
+
+### Optional vs Required
+```typescript
+// ✅ Use optional for optional props
+interface Props {
+  required: string
+  optional?: number
+}
+
+// ✅ Use undefined for explicitly optional
+interface Props {
+  value?: string | undefined
+}
+```
+
+## Firebase Type Patterns
+
+### Firestore Documents
+```typescript
+import { Timestamp } from 'firebase/firestore'
+
+export interface DocumentType {
+  id?: string // Added after fetch
+  field: string
+  createdAt?: Timestamp
+  updatedAt?: Timestamp
+}
+```
+
+### Service Functions
+```typescript
+// Clean undefined values before Firestore writes
+const cleanData = (data: any): any => {
+  const cleaned: any = {}
+  Object.keys(data).forEach(key => {
+    if (data[key] !== undefined && data[key] !== null) {
+      cleaned[key] = data[key]
+    }
+  })
+  return cleaned
+}
+```
+
+## React Type Patterns
+
+### Component Types
+```typescript
+// ✅ Using React.FC
+export const Component: React.FC<Props> = ({ prop1, prop2 }) => {
+  // Implementation
+}
+
+// ✅ Explicit function signature
+export function Component({ prop1, prop2 }: Props) {
+  // Implementation
+}
+```
+
+### Event Handlers
+```typescript
+// ✅ Typed event handlers
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  setValue(e.target.value)
+}
+
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  e.preventDefault()
+  // Handle submit
+}
+```
+
+### Hooks
+```typescript
+// ✅ Typed useState
+const [value, setValue] = useState<string>('')
+
+// ✅ Typed useReducer
+const [state, dispatch] = useReducer<State, Action>(reducer, initialState)
+```
+
+## Common Mistakes to Avoid
+
+- ❌ Using `any` types
+- ❌ Missing return types on async functions
+- ❌ Not typing component props
+- ❌ Using relative imports when absolute available
+- ❌ Not cleaning undefined values before Firestore writes
+- ❌ Missing types for Firebase Timestamps
+- ❌ Not exporting prop interfaces
+
+## References
+- `tsconfig.json` - TypeScript configuration
+- `src/components/atoms/Button/Button.tsx` - Component type example
+- `src/features/social/social/services/postService.ts` - Service type example
+- `src/features/social/social/types.ts` - Feature types example

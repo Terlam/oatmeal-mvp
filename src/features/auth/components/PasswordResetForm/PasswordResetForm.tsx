@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Input, Button } from '@components/atoms'
+import { Card, Input, Button } from '../../../../components/atoms'
 
 interface PasswordResetFormProps {
   email?: string

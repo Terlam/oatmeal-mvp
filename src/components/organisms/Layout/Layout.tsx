@@ -19,6 +19,8 @@ type LayoutProps = {
   userName?: string | null
   userEmail?: string | null
   userAvatarUrl?: string | null
+  onSignIn?: () => void
+  onAbout?: () => void
 }
 
 export const Layout: React.FC<LayoutProps> = ({
@@ -28,18 +30,32 @@ export const Layout: React.FC<LayoutProps> = ({
   userName,
   userEmail,
   userAvatarUrl,
+  onSignIn,
+  onAbout,
 }) => {
   const router = useRouter()
   const logout = useAuthStore((s) => s.logout)
   const theme = useThemeStore((s) => s.theme)
+  const setTheme = useThemeStore((s) => s.setTheme)
   const toggle = useThemeStore((s) => s.toggle)
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
 
+  // Ensure <html> class is always in sync with Zustand theme
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    }
+  }, [theme])
+
   return (
     <div className="flex flex-col min-h-screen transition-colors bg-white text-gray-800 dark:bg-gray-900 dark:text-white">
       {/* Header */}
-      <header className="shadow-md transition-colors bg-white dark:bg-gray-900">
+      <header className="shadow-md transition-colors bg-white dark:bg-gray-900 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
         <Navbar fluid rounded className="bg-transparent dark:bg-transparent">
           <NavbarBrand href="/">
             <Avatar
@@ -54,7 +70,20 @@ export const Layout: React.FC<LayoutProps> = ({
           </NavbarBrand>
           <div className="flex items-center md:order-2 space-x-2">
             <button
-              onClick={toggle}
+              onClick={() => {
+                toggle();
+                // Also update <html> class immediately for snappy UI
+                if (typeof window !== 'undefined') {
+                  const next = theme === 'light' ? 'dark' : 'light';
+                  if (next === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                  localStorage.setItem('postmeal-theme', next);
+                  setTheme(next);
+                }
+              }}
               className="p-2 rounded focus:outline-none focus:ring-2 focus:ring-brand dark:focus:ring-yellow-400 bg-gray-200 dark:bg-gray-800 transition-colors"
               aria-label="Toggle theme"
             >
@@ -76,7 +105,7 @@ export const Layout: React.FC<LayoutProps> = ({
               </button>
             ) : (
               <button
-                onClick={() => router.push('/auth')}
+                onClick={onSignIn}
                 className="ml-2 px-3 py-1 bg-blue-600 text-white rounded-full dark:bg-yellow-500 dark:text-gray-900 transition-colors"
               >
                 Sign in 
@@ -88,13 +117,13 @@ export const Layout: React.FC<LayoutProps> = ({
             <NavbarLink href="/" active>
               Home
             </NavbarLink>
-            <NavbarLink href="/about">About</NavbarLink>
+            <NavbarLink href="#" onClick={e => { e.preventDefault(); onAbout && onAbout(); }}>About</NavbarLink>
             <NavbarLink href="/dashboard">Dashboard</NavbarLink>
           </NavbarCollapse>
         </Navbar>
       </header>
       <main className="flex-grow container mx-auto p-4 transition-colors">{children}</main>
-      <footer className="py-6 mt-auto transition-colors bg-white dark:bg-gray-900">
+      <footer className="py-6 mt-auto transition-colors bg-white dark:bg-gray-900 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-t border-gray-200 dark:border-gray-700">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
           <Link href="/" className="flex items-center mb-4 md:mb-0">
             <Avatar
