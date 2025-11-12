@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Avatar } from '@components/atoms'
-import { useAuthStore } from '@store/authStore'
+import { Avatar } from '@/components/atoms'
+import { useAuthStore } from '@/store/authStore'
 import { useCommentActions } from '../../../hooks/useComments'
 import type { Comment as CommentType } from '../../../types'
 
@@ -64,7 +64,7 @@ export const Comment: React.FC<CommentProps> = ({
   return (
     <div className={`border-l-2 border-gray-200 dark:border-gray-700 pl-4 py-2 ${className}`}>
       <div className="flex items-start gap-3">
-        <Avatar userId={comment.authorId} alt={'User'} />
+        <Avatar alt="User" />
         
         <div className="flex-1 min-w-0">
           {/* Header */}

@@ -1,7 +1,7 @@
 // features/social/components/molecules/StirForm.tsx
 
 import { useState } from 'react'
-import { Input, Button, Label } from '@components'
+import { Input, Button, Label } from '@/components/atoms'
 
 export interface StirFormProps {
   postId: string

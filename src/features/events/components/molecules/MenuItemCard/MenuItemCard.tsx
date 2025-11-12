@@ -3,7 +3,7 @@ import { Card } from '@/components/atoms/Card'
 import { Avatar } from '@/components/atoms/Avatar'
 import { Button } from '@/components/atoms/Button'
 import { User, CheckCircle, Circle } from 'lucide-react'
-import type { MenuItem } from '../../types'
+import type { MenuItem } from '@/features/events/types'
 import clsx from 'clsx'
 
 export interface MenuItemCardProps {

@@ -1,27 +1,21 @@
 import React, { useState } from 'react'
-import { NextPage, GetServerSideProps } from 'next'
-import { adminAuth } from '@firebase'
+import { NextPage } from 'next'
 import { EventForm } from '@/features/events/components/molecules/EventForm'
 import { createEvent } from '@/features/events/services/eventService'
 import { useAuthStore } from '@/store/authStore'
 import { useRouter } from 'next/router'
 import { Card } from '@/components/atoms/Card'
+import type { Event } from '@/features/events/types'
 
-interface CreateEventPageProps {
-  user: {
-    name?: string | null
-    email?: string | null
-    avatarUrl?: string | null
-  }
-}
+// Props now come from client-side auth store
 
-const CreateEventPage: NextPage<CreateEventPageProps> = () => {
+const CreateEventPage: NextPage = () => {
   const user = useAuthStore((s) => s.user)
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = async (event: Omit<any, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleSubmit = async (event: Omit<Event, 'id' | 'createdAt' | 'updatedAt'>) => {
     if (!user) {
       setError('You must be signed in to create an event')
       return
@@ -77,28 +71,6 @@ const CreateEventPage: NextPage<CreateEventPageProps> = () => {
 ;(CreateEventPage as any).auth = true
 export default CreateEventPage
 
-export const getServerSideProps: GetServerSideProps<CreateEventPageProps> = async ({ req }) => {
-  const token = req.cookies.__session || ''
-  const isEmulator = process.env.NEXT_PUBLIC_FIREBASE_USE_EMULATOR === 'true'
-
-  try {
-    const decoded = isEmulator
-      ? await adminAuth.verifyIdToken(token)
-      : await adminAuth.verifySessionCookie(token, true)
-    const user = {
-      name: decoded.name || null,
-      email: decoded.email || null,
-      avatarUrl: decoded.picture || null,
-    }
-    return { props: { user } }
-  } catch (err) {
-    console.error('SSR token verification failed:', err)
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-}
+// Note: getServerSideProps removed for static export compatibility
+// Auth is now handled client-side via useAuthStore
 

@@ -1,7 +1,28 @@
-import { Button, Tooltip } from '@components/atoms'
+import React from 'react'
+import { Button } from '@/components/atoms'
+import { Tooltip } from 'flowbite-react'
 import { Bookmark, Heart, Share2, Edit, Trash2, PlusCircle } from 'lucide-react'
 
-export const OatActions = ({
+interface OatActionsProps {
+  onScoop?: () => void
+  onTaste?: () => void
+  onStir?: () => void
+  onCompost?: () => void
+  onSave?: () => void
+  onSprinkle?: () => void
+  onShare?: () => void
+  disabled?: {
+    scoop?: boolean
+    taste?: boolean
+    stir?: boolean
+    compost?: boolean
+    save?: boolean
+    sprinkle?: boolean
+    share?: boolean
+  }
+}
+
+export const OatActions: React.FC<OatActionsProps> = ({
   onScoop,
   onTaste,
   onStir,

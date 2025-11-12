@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Button } from '@components/atoms'
-import { useAuthStore } from '@store/authStore'
+import { Button } from '@/components/atoms'
+import { useAuthStore } from '@/store/authStore'
 import { createComment } from '../../../services/commentService'
 
 interface CommentFormProps {

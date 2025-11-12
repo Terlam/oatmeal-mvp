@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button } from '@/components/atoms/Button'
 import { Textarea } from 'flowbite-react'
 import { Avatar } from '@/components/atoms/Avatar'
-import type { EventComment } from '../../types'
+import type { EventComment } from '@/features/events/types'
 
 export interface CommentFormProps {
   onSubmit: (comment: Omit<EventComment, 'id' | 'eventId' | 'createdAt' | 'updatedAt' | 'isEdited'>) => Promise<void>

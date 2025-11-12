@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { NextPage, GetServerSideProps } from 'next'
-import { adminAuth } from '@firebase'
+import { adminAuth } from '@/firebase'
 import { EventList } from '@/features/events/components/organisms/EventList'
 import { Button } from '@/components/atoms/Button'
 import { useEvents } from '@/features/events/hooks/useEvents'
@@ -121,28 +121,6 @@ const EventsPage: NextPage<EventsPageProps> = ({ user }) => {
 ;(EventsPage as any).auth = true
 export default EventsPage
 
-export const getServerSideProps: GetServerSideProps<EventsPageProps> = async ({ req }) => {
-  const token = req.cookies.__session || ''
-  const isEmulator = process.env.NEXT_PUBLIC_FIREBASE_USE_EMULATOR === 'true'
-
-  try {
-    const decoded = isEmulator
-      ? await adminAuth.verifyIdToken(token)
-      : await adminAuth.verifySessionCookie(token, true)
-    const user = {
-      name: decoded.name || null,
-      email: decoded.email || null,
-      avatarUrl: decoded.picture || null,
-    }
-    return { props: { user } }
-  } catch (err) {
-    console.error('SSR token verification failed:', err)
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-}
+// Note: getServerSideProps removed for static export compatibility
+// Auth is now handled client-side via useAuthStore
 

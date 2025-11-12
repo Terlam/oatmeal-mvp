@@ -15,7 +15,7 @@ import {
   arrayRemove,
   writeBatch,
 } from 'firebase/firestore'
-import { db } from '../../../firebase/clientApp'
+import { db } from '@/firebase/clientApp'
 import type { Comment } from '../types'
 
 // Helper function to remove undefined values from comment data

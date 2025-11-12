@@ -4,7 +4,7 @@ import { Avatar } from '@/components/atoms/Avatar'
 import { Button } from '@/components/atoms/Button'
 import { Calendar, MapPin, Users } from 'lucide-react'
 import Link from 'next/link'
-import type { Event } from '../../types'
+import type { Event } from '@/features/events/types'
 import clsx from 'clsx'
 
 export interface EventCardProps {

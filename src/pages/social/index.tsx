@@ -1,15 +1,15 @@
-import { useAuthStore } from '@store/authStore'
-import { useMyPosts, usePostActions } from '@features/social/social/hooks/usePosts'
-import { FeedGrid } from '@features/social/social/components/organisms/FeedGrid'
-import { PostForm } from '@features/social/social/components/molecules/PostForm'
-import { createPost } from '@features/social/social/services/postService'
+import { useAuthStore } from '@/store/authStore'
+import { useMyPosts, usePostActions } from '@/features/social/social/hooks/usePosts'
+import { FeedGrid } from '@/features/social/social/components/organisms/FeedGrid'
+import { PostForm } from '@/features/social/social/components/molecules/PostForm'
+import { createPost } from '@/features/social/social/services/postService'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
 export default function MyPostsPage() {
   const user = useAuthStore((s) => s.user)
   const userId = user?.uid
-  const { posts, loading, refetch } = useMyPosts(userId || '')
+  const { social, loading, refetch } = useMyPosts(userId || '')
   const { handleChew, handleDelete } = usePostActions()
   const router = useRouter()
   const [formOpen, setFormOpen] = useState(false)
@@ -61,7 +61,7 @@ export default function MyPostsPage() {
       {loading ? (
         <div className="text-center py-12">Loading…</div>
       ) : (
-        <FeedGrid posts={posts} onChew={handleChewPost} onDelete={handleDeletePost} onComment={handleComment} />
+        <FeedGrid social={social} onChew={handleChewPost} onDelete={handleDeletePost} onComment={handleComment} />
       )}
     </div>
   )

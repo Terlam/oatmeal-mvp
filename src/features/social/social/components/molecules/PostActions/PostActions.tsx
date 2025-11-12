@@ -1,6 +1,6 @@
 // features/social/components/molecules/PostActions.tsx
 
-import { Button } from '@components'
+import { Button } from '@/components/atoms'
 
 export interface PostActionsProps {
   onChew?: () => void

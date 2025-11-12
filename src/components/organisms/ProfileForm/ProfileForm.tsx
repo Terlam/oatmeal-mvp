@@ -3,7 +3,7 @@ import { Card, TextInput, Button, Avatar } from 'flowbite-react'
 import { Label, FileInput } from '../../atoms'
 import { User } from 'firebase/auth'
 import { uploadBytes, ref, getDownloadURL } from 'firebase/storage'
-import { storage } from '@firebase/clientApp'
+import { storage } from '@/firebase/clientApp'
 import clsx from 'clsx'
 
 export interface ProfileData {

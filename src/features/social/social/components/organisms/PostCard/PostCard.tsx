@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Card, Button, Avatar } from '@components/atoms'
-import { useAuthStore } from '@store/authStore'
+import { Card, Button, Avatar } from '@/components/atoms'
+import { useAuthStore } from '@/store/authStore'
 import { usePostActions } from '../../../hooks/usePosts'
 import type { Post } from '../../../types'
 
@@ -72,7 +72,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Avatar userId={post.authorId} alt={'User'} />
+            <Avatar alt="User" />
             <div>
               <div className="font-bold text-lg">{post.title}</div>
               <div className="text-xs text-gray-500 dark:text-gray-200">

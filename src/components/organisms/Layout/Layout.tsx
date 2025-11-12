@@ -98,7 +98,9 @@ export const Layout: React.FC<LayoutProps> = ({
             <NavbarToggle />
           </div>
           <NavbarCollapse>
-            <NavbarLink href="#" onClick={e => { e.preventDefault(); onAbout && onAbout(); }}>About</NavbarLink>
+            <span className="hidden md:block">
+              <NavbarLink href="#" onClick={e => { e.preventDefault(); onAbout && onAbout(); }}>About</NavbarLink>
+            </span>
             <NavbarLink href="/events" active={router.pathname === '/events'}>Events</NavbarLink>
             {isLoggedIn && (
               <NavbarLink href="/dashboard" active={router.pathname === '/dashboard'}>Dashboard</NavbarLink>

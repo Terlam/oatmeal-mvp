@@ -7,8 +7,8 @@ const meta: Meta<typeof Layout> = {
   component: Layout,
   tags: ['autodocs'],
   argTypes: {
+    isLoading: { control: 'boolean' },
     isLoggedIn: { control: 'boolean' },
-    darkMode: { control: 'boolean' },
     userName: { control: 'text' },
     userEmail: { control: 'text' },
     userAvatarUrl: { control: 'text' },
@@ -22,16 +22,16 @@ type Story = StoryObj<typeof Layout>
 
 export const LoggedOut: Story = {
   args: {
+    isLoading: false,
     isLoggedIn: false,
-    darkMode: false,
     children: 'Public Page Content',
   },
 }
 
 export const LoggedIn: Story = {
   args: {
+    isLoading: false,
     isLoggedIn: true,
-    darkMode: false,
     userName: 'John Doe',
     userEmail: 'john@example.com',
     userAvatarUrl: 'https://i.pravatar.cc/150?img=3',
@@ -39,13 +39,10 @@ export const LoggedIn: Story = {
   },
 }
 
-export const DarkMode: Story = {
+export const Loading: Story = {
   args: {
-    isLoggedIn: true,
-    darkMode: true,
-    userName: 'Jane Smith',
-    userEmail: 'jane@example.com',
-    userAvatarUrl: 'https://i.pravatar.cc/150?img=3',
-    children: 'Dark Themed Content',
+    isLoading: true,
+    isLoggedIn: false,
+    children: 'Loading...',
   },
 }

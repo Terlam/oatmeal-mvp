@@ -1,6 +1,6 @@
 import React from 'react'
 import { MenuItemCard } from '../../molecules/MenuItemCard'
-import type { MenuItem, MenuItemCategory } from '../../types'
+import type { MenuItem, MenuItemCategory } from '@/features/events/types'
 import clsx from 'clsx'
 
 export interface MenuGridProps {

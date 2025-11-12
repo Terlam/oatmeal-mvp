@@ -6,7 +6,7 @@ import {
   orderBy,
   serverTimestamp,
 } from 'firebase/firestore'
-import { db } from '../../../firebase/clientApp'
+import { db } from '@/firebase/clientApp'
 import type { Stir } from '../types'
 
 export const createStir = async (postId: string, stir: Omit<Stir, 'createdAt'>) => {

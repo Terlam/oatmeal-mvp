@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router'
-import { usePost } from '@features/social/hooks/usePosts'
-import { usePostActions } from '@features/social/hooks/usePosts'
-import { PostCard } from '@features/social/components/organisms/PostCard'
-import { CommentList } from '@features/social/components/molecules/CommentList'
-import { useAuthStore } from '@store/authStore'
+import { usePost } from '@/features/social/social/hooks/usePosts'
+import { usePostActions } from '@/features/social/social/hooks/usePosts'
+import { PostCard } from '@/features/social/social/components/organisms/PostCard'
+import { CommentList } from '@/features/social/social/components/molecules/CommentList'
+import { useAuthStore } from '@/store/authStore'
 import { useState } from 'react'
 
 export default function PostDetailPage() {

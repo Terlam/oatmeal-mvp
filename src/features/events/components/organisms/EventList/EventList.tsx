@@ -1,6 +1,6 @@
 import React from 'react'
 import { EventCard } from '../../molecules/EventCard'
-import type { Event } from '../../types'
+import type { Event } from '@/features/events/types'
 import clsx from 'clsx'
 
 export interface EventListProps {

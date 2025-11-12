@@ -547,8 +547,16 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
           setSelectedMenuItem(null)
         }}
         item={selectedMenuItem}
-        onClaim={() => selectedMenuItem && handleClaimItem(selectedMenuItem.id!)}
-        onUnclaim={() => selectedMenuItem && handleUnclaimItem(selectedMenuItem.id!)}
+        onClaim={async () => {
+          if (selectedMenuItem?.id) {
+            await handleClaimItem(selectedMenuItem.id)
+          }
+        }}
+        onUnclaim={async () => {
+          if (selectedMenuItem?.id) {
+            await handleUnclaimItem(selectedMenuItem.id)
+          }
+        }}
         loading={submitting}
         isClaimed={selectedMenuItem?.isClaimed || false}
       />

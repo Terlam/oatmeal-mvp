@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Input, Label, Button } from '@/components/atoms'
 import { Select, Textarea, Checkbox } from 'flowbite-react'
-import type { MenuItem, MenuItemCategory } from '../../types'
+import type { MenuItem, MenuItemCategory } from '@/features/events/types'
 
 export interface MenuItemFormProps {
   onSubmit: (item: Omit<MenuItem, 'id' | 'eventId' | 'createdAt' | 'updatedAt'>, imageFile?: File) => Promise<void>

@@ -1,7 +1,7 @@
 // features/social/components/molecules/PostForm.tsx
 
 import { useState } from 'react'
-import { Input, Label, Button, FileInput } from '@components'
+import { Input, Label, Button, FileInput } from '@/components/atoms'
 
 export interface PostFormProps {
   onSubmit: (data: { title: string; content: string; image?: File }) => void

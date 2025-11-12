@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Input, Label, Button } from '@/components/atoms'
 import { Select, Textarea } from 'flowbite-react'
-import type { Event, EventTheme } from '../../types'
+import { Timestamp } from 'firebase/firestore'
+import type { Event, EventTheme } from '@/features/events/types'
 
 export interface EventFormProps {
   onSubmit: (event: Omit<Event, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>
@@ -73,7 +74,6 @@ export const EventForm: React.FC<EventFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    const { Timestamp } = await import('firebase/firestore')
     // Combine date and time into a single Date object for eventDate
     let eventDateObj: Timestamp
     if (eventDate && eventTime) {

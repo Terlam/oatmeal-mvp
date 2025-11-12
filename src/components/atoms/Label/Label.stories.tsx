@@ -1,21 +1,14 @@
 import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
-import { Label, LabelProps } from './Label'
+import { Label } from './Label'
 
 const meta: Meta<typeof Label> = {
   title: 'Atoms/Label',
   component: Label,
   argTypes: {
-    variant: {
-      control: { type: 'select' },
-      options: ['default', 'inverse', 'error'] as LabelProps['variant'][],
-    },
-    size: {
-      control: { type: 'select' },
-      options: ['sm', 'md', 'lg'] as LabelProps['size'][],
-    },
     htmlFor: { control: 'text' },
     children: { control: 'text' },
+    value: { control: 'text' },
   },
 }
 
@@ -29,10 +22,16 @@ export const Default: Story = {
   },
 }
 
-export const Inverse: Story = {
+export const WithValue: Story = {
   args: {
-    children: 'Inverse label',
-    variant: 'inverse',
+    value: 'Label with value prop',
+    htmlFor: 'some-input',
+  },
+}
+
+export const DarkMode: Story = {
+  args: {
+    children: 'Dark mode label',
     htmlFor: 'some-input',
   },
   decorators: [
@@ -44,20 +43,12 @@ export const Inverse: Story = {
   ],
 }
 
-export const Error: Story = {
-  args: {
-    children: 'Error label',
-    variant: 'error',
-    htmlFor: 'some-input',
-  },
-}
-
-export const Sizes: Story = {
+export const Multiple: Story = {
   render: () => (
     <div className="space-y-2">
-      <Label size="sm" htmlFor="a">Small size</Label>
-      <Label size="md" htmlFor="b">Medium size</Label>
-      <Label size="lg" htmlFor="c">Large size</Label>
+      <Label htmlFor="a">First label</Label>
+      <Label htmlFor="b">Second label</Label>
+      <Label htmlFor="c">Third label</Label>
     </div>
   ),
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { Card } from '@/components/atoms/Card'
 import { Avatar } from '@/components/atoms/Avatar'
 import { CheckCircle, HelpCircle, XCircle } from 'lucide-react'
-import type { RSVP } from '../../types'
+import type { RSVP } from '@/features/events/types'
 import clsx from 'clsx'
 
 export interface RSVPListProps {

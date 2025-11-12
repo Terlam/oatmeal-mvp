@@ -2,6 +2,23 @@
   "firestore": {
     "rules": "firestore.rules"
   },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "hosting": {
+    "public": "out",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
   "emulators": {
     "singleProjectMode": true,
     "auth": {
@@ -17,8 +34,5 @@
     "firestore": {
       "port": 8080
     }
-  },
-  "storage": {
-    "rules": "storage.rules"
   }
 }

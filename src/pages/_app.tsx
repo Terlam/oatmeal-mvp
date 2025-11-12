@@ -103,14 +103,24 @@ export default function MyApp({ Component, pageProps }: ExtendedAppProps) {
     startListening()
   }, [startListening])
 
-  // Show onboarding on first visit
+  // Show onboarding on first visit (only on desktop/tablet, not mobile)
   useEffect(() => {
     if (typeof window !== 'undefined' && !isCompleted && !isOnboardingOpen) {
-      // Show onboarding after a short delay on first visit
-      const timer = setTimeout(() => {
-        openOnboarding(0)
-      }, 1000)
-      return () => clearTimeout(timer)
+      // Check if screen is mobile width (less than 768px)
+      const isMobile = window.innerWidth < 768
+      
+      // Only show onboarding on desktop/tablet, not mobile
+      if (!isMobile) {
+        // Show onboarding after a short delay on first visit
+        const timer = setTimeout(() => {
+          openOnboarding(0)
+        }, 1000)
+        return () => clearTimeout(timer)
+      } else {
+        // On mobile, mark onboarding as completed so it doesn't show
+        // This prevents it from showing if user resizes to desktop later
+        // You could also store a flag that it was skipped on mobile if needed
+      }
     }
   }, [isCompleted, isOnboardingOpen, openOnboarding])
 

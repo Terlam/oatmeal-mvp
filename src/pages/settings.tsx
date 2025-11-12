@@ -1,16 +1,21 @@
-import { GetServerSideProps } from 'next'
 import React from 'react'
-import { ProfileForm, ProfileData } from '@components/organisms/ProfileForm'
-import { adminAuth } from '@firebase/admin'
-import { auth as clientAuth } from '@firebase/clientApp'
+import { ProfileForm, ProfileData } from '@/components/organisms/ProfileForm'
+import { useAuthStore } from '@/store/authStore'
 import { updateProfile } from 'firebase/auth'
 
-interface SettingsPageProps {
-  uid: string
-}
-
-const SettingsPage: React.FC<SettingsPageProps> = ({ uid }) => {
-  const user = clientAuth.currentUser!
+const SettingsPage: React.FC = () => {
+  const authUser = useAuthStore((s) => s.user)
+  
+  if (!authUser) {
+    return (
+      <main className="py-12">
+        <h1 className="text-3xl font-bold text-center mb-8">Your Profile</h1>
+        <p className="text-center">Please sign in to view your settings.</p>
+      </main>
+    )
+  }
+  
+  const user = authUser
 
   const handleUpdate = async (data: ProfileData) => {
     const displayName = `${data.firstName} ${data.lastName}`.trim()
@@ -33,17 +38,8 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ uid }) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const token = req.cookies.__session || ''
-  try {
-    const decoded = await adminAuth.verifyIdToken(token)
-    return { props: { uid: decoded.uid } }
-  } catch {
-    return {
-      redirect: { destination: '/login', permanent: false },
-    }
-  }
-}
+// Note: getServerSideProps removed for static export compatibility
+// Auth is now handled client-side via useAuthStore
 
 (SettingsPage as any).auth = true
 export default SettingsPage

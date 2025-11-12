@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Input, Label, Button } from '@/components/atoms'
 import { Select, Textarea } from 'flowbite-react'
-import type { RSVP, RSVPStatus } from '../../types'
+import type { RSVP, RSVPStatus } from '@/features/events/types'
 
 export interface RSVPFormProps {
   onSubmit: (rsvp: Omit<RSVP, 'id' | 'eventId' | 'createdAt' | 'updatedAt'>) => Promise<void>

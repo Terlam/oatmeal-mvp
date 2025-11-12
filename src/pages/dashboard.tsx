@@ -1,17 +1,11 @@
 import React from 'react'
-import { NextPage, GetServerSideProps } from 'next'
-import { adminAuth } from '@firebase'
+import { NextPage } from 'next'
+import { useAuthStore } from '@/store/authStore'
 import Link from 'next/link'
-import { Avatar } from '@components/atoms/Avatar'
+import { Avatar } from '@/components/atoms/Avatar'
 import { ArrowRight } from 'lucide-react'
 
-interface DashboardProps {
-  user: {
-    name?: string | null
-    email?: string | null
-    avatarUrl?: string | null
-  }
-}
+// Props now come from client-side auth store
 
 const features = [
   {
@@ -31,8 +25,9 @@ const features = [
   // Add more features here as you build them!
 ]
 
-const Dashboard: NextPage<DashboardProps> = ({ user }) => {
-  const displayName = user.name ?? 'there'
+const Dashboard: NextPage = () => {
+  const user = useAuthStore((s) => s.user)
+  const displayName = user?.displayName ?? 'there'
 
   return (
     <section
@@ -89,27 +84,5 @@ const Dashboard: NextPage<DashboardProps> = ({ user }) => {
 ;(Dashboard as any).auth = true
 export default Dashboard
 
-export const getServerSideProps: GetServerSideProps<DashboardProps> = async ({ req }) => {
-  const token = req.cookies.__session || ''
-  const isEmulator = process.env.NEXT_PUBLIC_FIREBASE_USE_EMULATOR === 'true'
-
-  try {
-    const decoded = isEmulator
-      ? await adminAuth.verifyIdToken(token)
-      : await adminAuth.verifySessionCookie(token, true)
-    const user = {
-      name: decoded.name || null,
-      email: decoded.email || null,
-      avatarUrl: decoded.picture || null,
-    }
-    return { props: { user } }
-  } catch (err) {
-    console.error('SSR token verification failed:', err)
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-}
+// Note: getServerSideProps removed for static export compatibility
+// Auth is now handled client-side via useAuthStore

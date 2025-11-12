@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, ModalHeader, ModalBody } from 'flowbite-react'
 import { Button } from '@/components/atoms/Button'
-import type { MenuItem } from '../../types'
+import type { MenuItem } from '@/features/events/types'
 
 export interface ClaimItemModalProps {
   show: boolean

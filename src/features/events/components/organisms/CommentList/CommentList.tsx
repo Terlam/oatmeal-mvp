@@ -3,7 +3,7 @@ import { Avatar } from '@/components/atoms/Avatar'
 import { Card } from '@/components/atoms/Card'
 import { Button } from '@/components/atoms/Button'
 import { Trash2, Edit2 } from 'lucide-react'
-import type { EventComment } from '../../types'
+import type { EventComment } from '@/features/events/types'
 import clsx from 'clsx'
 
 export interface CommentListProps {
