@@ -20,8 +20,8 @@ html, body {
 }
 
 .dark html, .dark body {
-  background-color: #18181b;
-  color: #f3f4f6;
+  background-color: #111827; /* gray-900 for better contrast */
+  color: #f9fafb; /* gray-50 for better contrast */
 }
 
 /* Utility for fun headings */

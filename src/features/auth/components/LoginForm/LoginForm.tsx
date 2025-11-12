@@ -116,7 +116,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           </Button>
 
           <div className="flex items-center justify-center mt-2">
-            <span className="text-gray-500 dark:text-gray-400 text-sm">or</span>
+            <span className="text-gray-500 dark:text-gray-200 text-sm">or</span>
           </div>
 
           <Button

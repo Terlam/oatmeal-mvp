@@ -71,7 +71,7 @@ export const Comment: React.FC<CommentProps> = ({
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-2">
               <span className="font-medium text-sm">{comment.authorId}</span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
+              <span className="text-xs text-gray-500 dark:text-gray-200">
                 {formatTimestamp(comment.createdAt)}
                 {comment.isEdited && ' (edited)'}
               </span>
@@ -153,7 +153,7 @@ export const Comment: React.FC<CommentProps> = ({
               className={`flex items-center gap-1 text-xs transition-colors ${
                 isLiked
                   ? 'text-red-600 dark:text-red-400'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                  : 'text-gray-500 dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
               {isLiked ? '❤️' : '🤍'} {comment.likeCount || 0}
@@ -161,7 +161,7 @@ export const Comment: React.FC<CommentProps> = ({
             
             <button
               onClick={() => onReply?.(comment.id!)}
-              className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+              className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               💬 Reply
             </button>

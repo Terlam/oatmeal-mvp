@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type SpwooState = 'wave' | 'think' | 'code' | 'celebrate';
+export type SpwooState = 'wave' | 'think' | 'celebrate' | 'strut';
 
 interface SpwooProps {
   state?: SpwooState;
@@ -8,118 +8,263 @@ interface SpwooProps {
   catchphrase?: string;
 }
 
-// Oo-wee! Meet Spwoo: the oatmeal-obsessed, can-do code spoon!
+// Gobble-gobble! Meet Spwoo: the friendly, helpful Thanksgiving turkey!
 const catchphrases = [
-  "Oo-wee!",
-  "Let's stir it up!",
-  "Oat-yeah!",
-  "Spoon up some code!",
-  "Breakfast for your brain!",
-  "Let's get weird!",
-  "Oatstanding!",
-  "Time to scoop!",
-  "You got this, buttercup!",
+  "Gobble-gobble!",
+  "Let's plan the perfect potluck!",
+  "Turkey-tastic!",
+  "Time to feast!",
+  "Thanksgiving vibes!",
+  "Let's get cooking!",
+  "Feast-astic!",
+  "Ready to celebrate!",
+  "You've got this, friend!",
 ];
 
 export const Spwoo: React.FC<SpwooProps> = ({ state = 'wave', size = 140, catchphrase }) => {
   // Pick a random catchphrase if not provided
   const phrase = catchphrase || catchphrases[Math.floor(Math.random() * catchphrases.length)];
 
-  // Color palette: fun, saturated, and night-mode friendly
-  const skin = '#FFE066'; // Spoon face
-  const body = '#F3F4F6'; // Spoon body
-  const accent = '#60A5FA'; // Bow tie
-  const hat = '#22223B'; // Top hat
-  const mouth = '#F59E42'; // Mouth
+  // Thanksgiving color palette: warm browns, oranges, reds
+  const head = '#DC2626'; // Red head
+  const body = '#92400E'; // Brown body
+  const beak = '#F97316'; // Orange beak
+  const wattle = '#EF4444'; // Red wattle
+  const feather = '#FBBF24'; // Gold feather accents
   const outline = 'currentColor';
   const darkMode = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
   const textColor = darkMode ? '#fff' : '#222';
-  // Arm color: visible in both modes
-  const armFill = darkMode ? '#ffe066' : '#b45309';
-  const armOutline = darkMode ? '#fff' : '#222';
+  const eyeColor = darkMode ? '#fff' : '#fff';
+  const eyePupil = darkMode ? '#222' : '#000';
 
-  // Adjusted proportions
-  const headCx = 60;
-  const headCy = 38;
-  const headRx = 22;
-  const headRy = 26; // slightly smaller head
-  const bodyCx = 60;
-  const bodyCy = 100;
-  const bodyRx = 9;
-  const bodyRy = 38; // longer, slimmer body
+  // Turkey proportions
+  const centerX = 60;
+  const headCenterY = 35;
+  const bodyCenterY = 85;
+  const headRadius = 18;
+  const bodyRadiusX = 25;
+  const bodyRadiusY = 35;
 
-  // --- SVG for Spwoo ---
+  // --- SVG for Spwoo the Turkey ---
   return (
     <div style={{ position: 'relative', width: size, height: size + 20, color: textColor }}>
-      {/* Spwoo's body and face */}
       <svg width={size} height={size} viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* --- Top Hat --- */}
+        {/* --- Body (large oval) --- */}
+        <ellipse 
+          cx={centerX} 
+          cy={bodyCenterY} 
+          rx={bodyRadiusX} 
+          ry={bodyRadiusY} 
+          fill={body} 
+          stroke={outline} 
+          strokeWidth="3" 
+        />
+        
+        {/* --- Tail feathers (fan shape) --- */}
         <g>
-          <ellipse cx="60" cy="13" rx="16" ry="7" fill={hat} stroke={outline} strokeWidth="2" />
-          <rect x="44" y="2" width="32" height="18" rx="7" fill={hat} stroke={outline} strokeWidth="2" />
-          <rect x="50" y="16" width="20" height="6" rx="3" fill={accent} stroke={outline} strokeWidth="1.5" />
+          {/* Left feather */}
+          <ellipse 
+            cx="35" 
+            cy={bodyCenterY - 10} 
+            rx="8" 
+            ry="25" 
+            fill={feather} 
+            stroke={outline} 
+            strokeWidth="2" 
+            transform="rotate(-20 35 75)"
+          />
+          {/* Center-left feather */}
+          <ellipse 
+            cx="42" 
+            cy={bodyCenterY - 15} 
+            rx="7" 
+            ry="28" 
+            fill={feather} 
+            stroke={outline} 
+            strokeWidth="2" 
+            transform="rotate(-10 42 70)"
+          />
+          {/* Center feather */}
+          <ellipse 
+            cx="50" 
+            cy={bodyCenterY - 18} 
+            rx="6" 
+            ry="30" 
+            fill={feather} 
+            stroke={outline} 
+            strokeWidth="2" 
+          />
+          {/* Center-right feather */}
+          <ellipse 
+            cx="58" 
+            cy={bodyCenterY - 15} 
+            rx="7" 
+            ry="28" 
+            fill={feather} 
+            stroke={outline} 
+            strokeWidth="2" 
+            transform="rotate(10 58 70)"
+          />
+          {/* Right feather */}
+          <ellipse 
+            cx="65" 
+            cy={bodyCenterY - 10} 
+            rx="8" 
+            ry="25" 
+            fill={feather} 
+            stroke={outline} 
+            strokeWidth="2" 
+            transform="rotate(20 65 75)"
+          />
         </g>
-        {/* --- Spoon Head (face) --- */}
-        <ellipse cx={headCx} cy={headCy} rx={headRx} ry={headRy} fill={skin} stroke={outline} strokeWidth="3" />
-        {/* --- Eyebrows (expressive!) --- */}
-        <path d="M48 28 Q52 24 56 28" stroke={outline} strokeWidth="2" strokeLinecap="round" />
-        <path d="M64 28 Q68 24 72 28" stroke={outline} strokeWidth="2" strokeLinecap="round" />
-        {/* --- Eyes (big, excited) --- */}
-        <ellipse cx="52" cy="40" rx="4" ry="6" fill="#fff" stroke={outline} strokeWidth="2" />
-        <ellipse cx="68" cy="40" rx="4" ry="6" fill="#fff" stroke={outline} strokeWidth="2" />
+
+        {/* --- Head (circle) --- */}
+        <circle 
+          cx={centerX} 
+          cy={headCenterY} 
+          r={headRadius} 
+          fill={head} 
+          stroke={outline} 
+          strokeWidth="3" 
+        />
+
+        {/* --- Wattle (red hanging thing) --- */}
+        <ellipse 
+          cx={centerX + 8} 
+          cy={headCenterY + 5} 
+          rx="4" 
+          ry="8" 
+          fill={wattle} 
+          stroke={outline} 
+          strokeWidth="1.5" 
+        />
+
+        {/* --- Beak (triangle/orange) --- */}
+        <path 
+          d={`M ${centerX} ${headCenterY - 5} L ${centerX - 4} ${headCenterY + 2} L ${centerX + 4} ${headCenterY + 2} Z`}
+          fill={beak}
+          stroke={outline}
+          strokeWidth="2"
+        />
+
+        {/* --- Eyes (expressive!) --- */}
+        <circle 
+          cx={centerX - 6} 
+          cy={headCenterY - 3} 
+          r="3" 
+          fill={eyeColor} 
+          stroke={outline} 
+          strokeWidth="1.5" 
+        />
+        <circle 
+          cx={centerX + 6} 
+          cy={headCenterY - 3} 
+          r="3" 
+          fill={eyeColor} 
+          stroke={outline} 
+          strokeWidth="1.5" 
+        />
         {/* Pupils */}
-        <ellipse cx="52" cy="42" rx="1.5" ry="2" fill="#222" />
-        <ellipse cx="68" cy="42" rx="1.5" ry="2" fill="#222" />
-        {/* --- Buck Teeth --- */}
-        <rect x="57" y="56" width="6" height="7" rx="2" fill="#fff" stroke={outline} strokeWidth="1" />
-        <line x1="60" y1="56" x2="60" y2="63" stroke={outline} strokeWidth="0.8" />
-        {/* --- Big Mouth (smile!) --- */}
-        <path d="M52 52 Q60 66 68 52 Q60 62 52 52" fill={mouth} stroke={outline} strokeWidth="2" />
-        {/* --- Slender Spoon Body --- */}
-        <path d={`M${bodyCx} 72 Q${bodyCx + 2} 110 ${bodyCx} 128 Q${bodyCx - 2} 110 ${bodyCx} 72`} fill={body} stroke={outline} strokeWidth="3" />
-        <ellipse cx={bodyCx} cy={bodyCy} rx={bodyRx} ry={bodyRy} fill={body} stroke={outline} strokeWidth="2.5" />
-        {/* --- Bow Tie --- */}
-        <g>
-          <ellipse cx="60" cy="74" rx="7" ry="3.5" fill={accent} stroke={outline} strokeWidth="1.5" />
-          <ellipse cx="53" cy="74" rx="3" ry="2" fill={accent} stroke={outline} strokeWidth="1" />
-          <ellipse cx="67" cy="74" rx="3" ry="2" fill={accent} stroke={outline} strokeWidth="1" />
-        </g>
-        {/* --- Waving Arm (right, visible in all modes) --- */}
-        <g>
-          <path d="M80 80 Q110 60 95 45" stroke={armOutline} strokeWidth="6" fill="none" />
-          <path d="M80 80 Q110 60 95 45" stroke={armFill} strokeWidth="3" fill="none" />
-          <ellipse cx="95" cy="45" rx="5" ry="7" fill={armFill} stroke={armOutline} strokeWidth="2" />
-          {/* Fingers */}
-          <ellipse cx="98" cy="40" rx="1.5" ry="3" fill={armFill} stroke={armOutline} strokeWidth="1" />
-          <ellipse cx="92" cy="44" rx="1.5" ry="3" fill={armFill} stroke={armOutline} strokeWidth="1" />
-          <ellipse cx="97" cy="50" rx="1.5" ry="3" fill={armFill} stroke={armOutline} strokeWidth="1" />
-        </g>
-        {/* --- Left Arm (resting, visible in all modes) --- */}
-        <g>
-          <path d="M40 80 Q10 60 25 45" stroke={armOutline} strokeWidth="6" fill="none" />
-          <path d="M40 80 Q10 60 25 45" stroke={armFill} strokeWidth="3" fill="none" />
-          <ellipse cx="25" cy="45" rx="5" ry="7" fill={armFill} stroke={armOutline} strokeWidth="2" />
-          {/* Fingers */}
-          <ellipse cx="22" cy="40" rx="1.5" ry="3" fill={armFill} stroke={armOutline} strokeWidth="1" />
-          <ellipse cx="28" cy="44" rx="1.5" ry="3" fill={armFill} stroke={armOutline} strokeWidth="1" />
-          <ellipse cx="23" cy="50" rx="1.5" ry="3" fill={armFill} stroke={armOutline} strokeWidth="1" />
-        </g>
-        {/* --- Little Foot (for extra cartoon energy) --- */}
-        <ellipse cx="60" cy="128" rx="7" ry="4" fill={accent} stroke={outline} strokeWidth="2" />
+        <circle 
+          cx={centerX - 6} 
+          cy={headCenterY - 3} 
+          r="1.5" 
+          fill={eyePupil}
+        />
+        <circle 
+          cx={centerX + 6} 
+          cy={headCenterY - 3} 
+          r="1.5" 
+          fill={eyePupil}
+        />
+
+        {/* --- Eyebrows (expressive based on state) --- */}
+        {state === 'think' && (
+          <>
+            <path d="M 48 23 Q 52 20 54 23" stroke={outline} strokeWidth="2" strokeLinecap="round" fill="none" />
+            <path d="M 66 23 Q 68 20 72 23" stroke={outline} strokeWidth="2" strokeLinecap="round" fill="none" />
+          </>
+        )}
+        {state === 'celebrate' && (
+          <>
+            <path d="M 48 23 Q 52 26 54 23" stroke={outline} strokeWidth="2" strokeLinecap="round" fill="none" />
+            <path d="M 66 23 Q 68 26 72 23" stroke={outline} strokeWidth="2" strokeLinecap="round" fill="none" />
+          </>
+        )}
+        {(state === 'wave' || state === 'strut') && (
+          <>
+            <path d="M 48 23 Q 52 24 54 23" stroke={outline} strokeWidth="2" strokeLinecap="round" fill="none" />
+            <path d="M 66 23 Q 68 24 72 23" stroke={outline} strokeWidth="2" strokeLinecap="round" fill="none" />
+          </>
+        )}
+
+        {/* --- Wings --- */}
+        <ellipse 
+          cx={centerX - 15} 
+          cy={bodyCenterY - 5} 
+          rx="8" 
+          ry="15" 
+          fill={body} 
+          stroke={outline} 
+          strokeWidth="2" 
+          transform="rotate(-30 45 80)"
+        />
+        <ellipse 
+          cx={centerX + 15} 
+          cy={bodyCenterY - 5} 
+          rx="8" 
+          ry="15" 
+          fill={body} 
+          stroke={outline} 
+          strokeWidth="2" 
+          transform="rotate(30 75 80)"
+        />
+
+        {/* --- Legs/Feet --- */}
+        <path 
+          d="M 52 115 L 52 125 L 48 128 L 50 128 L 52 125 L 54 128 L 56 128 L 52 125 Z"
+          fill={beak}
+          stroke={outline}
+          strokeWidth="1.5"
+        />
+        <path 
+          d="M 68 115 L 68 125 L 64 128 L 66 128 L 68 125 L 70 128 L 72 128 L 68 125 Z"
+          fill={beak}
+          stroke={outline}
+          strokeWidth="1.5"
+        />
+
+        {/* --- Waving wing (if state is wave) --- */}
+        {state === 'wave' && (
+          <g>
+            <ellipse 
+              cx={centerX + 20} 
+              cy={headCenterY + 5} 
+              rx="6" 
+              ry="12" 
+              fill={body} 
+              stroke={outline} 
+              strokeWidth="2" 
+              transform="rotate(45 80 40)"
+            />
+          </g>
+        )}
+
         {/* --- Shadow --- */}
-        <ellipse cx="60" cy="137" rx="24" ry="6" fill="#D1D5DB" />
+        <ellipse cx={centerX} cy="137" rx="28" ry="6" fill="#D1D5DB" opacity="0.5" />
       </svg>
-      {/* --- Speech Bubble with catchphrase (side of head, vertically centered) --- */}
+      
+      {/* --- Speech Bubble with catchphrase --- */}
       {phrase && (
         <div
           style={{
             position: 'absolute',
             left: '100%',
-            top: '38%',
+            top: '35%',
             transform: 'translateY(-50%)',
-            background: darkMode ? '#22223B' : '#fffbe6',
+            background: darkMode ? '#92400E' : '#FFF7ED',
             color: textColor,
-            border: `2px solid ${darkMode ? '#ffe066' : '#22223B'}`,
+            border: `2px solid ${darkMode ? '#F97316' : '#DC2626'}`,
             borderRadius: 18,
             padding: '8px 18px',
             fontWeight: 700,
@@ -140,4 +285,4 @@ export const Spwoo: React.FC<SpwooProps> = ({ state = 'wave', size = 140, catchp
     </div>
   );
 };
-// Oo-wee! Spwoo believes in you. Now go stir up something weirdly useful! 
+// Gobble-gobble! Spwoo the Turkey believes in you. Now go plan the perfect potluck meal!

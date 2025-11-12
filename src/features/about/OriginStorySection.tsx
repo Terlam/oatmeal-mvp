@@ -12,7 +12,7 @@ export const OriginStorySection = () => (
       <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300">
         We wanted a starter kit that felt like a warm bowl of postmeal: simple, nourishing, and ready for whatever toppings you want to throw on. No more wrestling with boilerplate, just a solid base to build your next weirdly useful thing.
       </p>
-      <p className="text-sm text-gray-400 dark:text-gray-500">
+      <p className="text-sm text-gray-400 dark:text-gray-200">
         Built by makers, for makers. If you’re reading this, you’re already part of the club.
       </p>
     </div>

@@ -74,7 +74,7 @@ export const UserCard: React.FC<UserCardProps> = ({
           </h3>
           
           {showDetails && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+            <p className="text-sm text-gray-500 dark:text-gray-200 truncate">
               {user.email}
             </p>
           )}

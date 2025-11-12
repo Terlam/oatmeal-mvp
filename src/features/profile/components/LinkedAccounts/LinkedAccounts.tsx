@@ -1,4 +1,4 @@
-// features/profile/components/organisms/LinkedAccounts.tsx
+import React from 'react'
 import { Card, Accordion,
   AccordionPanel,
   AccordionTitle,
@@ -25,9 +25,15 @@ export const LinkedAccounts: React.FC<LinkedAccountsProps> = ({ accounts, toggle
               </div>
             </AccordionTitle>
             <AccordionContent>
-              <Button color={account.linked ? 'failure' : 'info'} onClick={() => toggle(account.id)}>
-                {account.linked ? 'Unlink' : 'Link'} {account.name}
-              </Button>
+              {account.id === 'google' ? (
+                <p className="text-sm text-gray-600 dark:text-gray-200">
+                  Google is your primary authentication method and cannot be unlinked.
+                </p>
+              ) : (
+                <Button color={account.linked ? 'failure' : 'info'} onClick={() => toggle(account.id)}>
+                  {account.linked ? 'Unlink' : 'Link'} {account.name}
+                </Button>
+              )}
             </AccordionContent>
           </AccordionPanel>
         ))}

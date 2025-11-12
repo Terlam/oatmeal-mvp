@@ -59,7 +59,7 @@ export default function PostsDemoPage() {
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-4">Postmeal Social Features Demo</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-lg text-gray-600 dark:text-gray-200 mb-6">
             Explore the new social features for social including likes, comments, shares, and more!
           </p>
           
@@ -94,7 +94,7 @@ export default function PostsDemoPage() {
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-500 dark:text-gray-400">Loading social...</p>
+            <p className="mt-4 text-gray-500 dark:text-gray-200">Loading social...</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -122,7 +122,7 @@ export default function PostsDemoPage() {
                   <h2 className="text-2xl font-bold">Comments</h2>
                   <button
                     onClick={() => setSelectedPostId(null)}
-                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    className="text-gray-500 hover:text-gray-700 dark:text-gray-200 dark:hover:text-gray-200"
                   >
                     ✕ Close
                   </button>

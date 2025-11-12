@@ -34,7 +34,7 @@ export const CommentList: React.FC<CommentListProps> = ({ postId, className }) =
       <div className={`space-y-4 ${className}`}>
         <div className="text-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-500 dark:text-gray-400">Loading comments...</p>
+          <p className="mt-2 text-gray-500 dark:text-gray-200">Loading comments...</p>
         </div>
       </div>
     )
@@ -62,7 +62,7 @@ export const CommentList: React.FC<CommentListProps> = ({ postId, className }) =
       {showCommentForm && (
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
           {replyingTo && (
-            <div className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+            <div className="mb-3 text-sm text-gray-600 dark:text-gray-200">
               Replying to comment...
             </div>
           )}
@@ -78,7 +78,7 @@ export const CommentList: React.FC<CommentListProps> = ({ postId, className }) =
       {/* Comments */}
       <div className="space-y-2">
         {comments.length === 0 ? (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          <div className="text-center py-8 text-gray-500 dark:text-gray-200">
             <p>No comments yet</p>
             <p className="text-sm">Be the first to share your thoughts!</p>
           </div>
@@ -98,7 +98,7 @@ export const CommentList: React.FC<CommentListProps> = ({ postId, className }) =
       {!showCommentForm && (
         <button
           onClick={() => setShowCommentForm(true)}
-          className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-left text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-left text-gray-500 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
         >
           💬 Add a comment...
         </button>

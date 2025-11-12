@@ -34,3 +34,4 @@ export const useAboutModalStore = create<AboutModalState>((set, get) => ({
 
 export * from "./authStore"
 export * from "./themeStore"
+export * from "./onboardingStore"

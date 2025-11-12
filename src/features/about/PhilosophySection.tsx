@@ -28,7 +28,7 @@ export const PhilosophySection = () => (
         </li>
       </ul>
       <p className="italic text-accent dark:text-yellow-200">We’re not “enterprise-ready.” We’re “side-project-excited.”</p>
-      <p className="text-center text-sm text-gray-400 dark:text-gray-500">Scale this thing to the moon? Great. But don’t forget us at IPO brunch.</p>
+      <p className="text-center text-sm text-gray-400 dark:text-gray-200">Scale this thing to the moon? Great. But don’t forget us at IPO brunch.</p>
     </div>
   </section>
 );

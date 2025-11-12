@@ -8,8 +8,9 @@ import { useAuthModalStore } from '../store'
 import { Modal, ModalHeader, ModalBody, Button } from 'flowbite-react'
 import { LoginForm } from '../features/auth/components/LoginForm/LoginForm'
 import { SignupForm } from '../features/auth/components/SignupForm/SignupForm'
-import { useAboutModalStore } from '../store'
+import { useAboutModalStore, useOnboardingStore } from '../store'
 import { Spwoo } from '../components/mascot/Spwoo'
+import { OnboardingModal } from '@/features/onboarding'
 import { X } from 'lucide-react'
 import { useRouter } from 'next/router'
 
@@ -25,28 +26,28 @@ function AboutModal() {
   const { isOpen, section, close, next, prev } = useAboutModalStore()
   const sections = [
     {
-      state: 'wave',
-      title: "Hi, I'm Spwoo!",
-      text: "Welcome to Oatmeal MVP. I'm Spwoo, your friendly code spoon. Let me show you around!",
-      catchphrase: "Oo-wee!"
+      state: 'wave' as const,
+      title: "Hi, I'm Spwoo the Turkey!",
+      text: "Welcome to Potluck Planner! I'm Spwoo, your friendly Thanksgiving turkey. I'm here to help you plan perfect potluck meals for your family!",
+      catchphrase: "Gobble-gobble!"
     },
     {
-      state: 'think',
-      title: "Why Oatmeal?",
-      text: "Oatmeal MVP is a teaching template for modern web apps. It's simple, nourishing, and endlessly customizable—just like a good bowl of oatmeal.",
-      catchphrase: "Let's stir it up!"
+      state: 'think' as const,
+      title: "Why Potluck Planner?",
+      text: "Potluck Planner makes it easy to organize family gatherings and potluck events. Plan menus, coordinate dishes, track RSVPs, and ensure everyone has a great time!",
+      catchphrase: "Let's plan it!"
     },
     {
-      state: 'code',
-      title: "What can I do?",
-      text: "Spin up features, learn best practices, and build your MVP fast. Use the AI generator, templates, and atomic components to cook up something great.",
-      catchphrase: "Spoon up some code!"
+      state: 'strut' as const,
+      title: "How It Works",
+      text: "Create events, add menu items, invite your family, and let everyone claim dishes they want to bring. Upload photos, track dietary restrictions, and coordinate seamlessly!",
+      catchphrase: "Time to feast!"
     },
     {
-      state: 'celebrate',
-      title: "Ready to Build?",
-      text: "Download from GitHub, read the README, and start building your own product. Spwoo will be here to cheer you on!",
-      catchphrase: "Oat-yeah!"
+      state: 'celebrate' as const,
+      title: "Ready to Plan?",
+      text: "Get started by creating your first event! Share it with your family and start planning the perfect potluck meal. Spwoo will be here to help you every step of the way!",
+      catchphrase: "Feast-astic!"
     },
   ]
   const current = sections[section] || sections[0]
@@ -58,17 +59,17 @@ function AboutModal() {
           <button
             onClick={close}
             aria-label="Close about modal"
-            className="absolute top-4 right-4 p-2 rounded-full bg-gray-200/80 dark:bg-gray-800/80 hover:bg-gray-300 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-brand dark:focus:ring-yellow-400 transition-colors"
+            className="absolute top-4 right-4 p-2 rounded-full bg-gray-200/80 dark:bg-gray-800/80 hover:bg-gray-300 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 transition-colors"
           >
             <X size={24} />
           </button>
         )}
         {/* Spwoo stands out with a floating, offset effect */}
         <div className="absolute -top-24 left-1/2 -translate-x-1/2 z-20 drop-shadow-xl" style={{ filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.18))' }}>
-          <Spwoo state={current.state as any} size={180} catchphrase={current.catchphrase} />
+          <Spwoo state={current.state} size={180} catchphrase={current.catchphrase} />
         </div>
         <div className="pt-24" />
-        <h2 className="fun-heading text-3xl sm:text-4xl text-brand dark:text-yellow-300 mb-2">{current.title}</h2>
+        <h2 className="fun-heading text-3xl sm:text-4xl text-orange-600 dark:text-orange-400 mb-2">{current.title}</h2>
         <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-200 font-medium mb-4">{current.text}</p>
         <div className="flex justify-between w-full mt-4 gap-4">
           <Button color="light" onClick={prev} disabled={section === 0} className="flex-1 py-3 rounded-xl font-semibold">Back</Button>
@@ -76,7 +77,7 @@ function AboutModal() {
         </div>
         {section === sections.length - 1 && (
           <div className="mt-6 text-center text-gray-600 dark:text-gray-300 text-lg">
-            Oo-wee! Thanks for learning about Oatmeal MVP. <br />You can always find Spwoo in the About menu!
+            Gobble-gobble! Thanks for learning about Potluck Planner. <br />You can always find Spwoo in the About menu!
           </div>
         )}
       </div>
@@ -93,21 +94,25 @@ export default function MyApp({ Component, pageProps }: ExtendedAppProps) {
   const theme = useThemeStore((s) => s.theme)
   const { isOpen, mode, open, close } = useAuthModalStore()
   const { open: openAbout } = useAboutModalStore()
+  const { isOpen: isOnboardingOpen, isCompleted, open: openOnboarding } = useOnboardingStore()
   const router = useRouter()
 
-  // --- Dark mode sync ---
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [theme])
-  // ----------------------
+  // Theme is now automatically synced via system preferences in themeStore
 
   useEffect(() => {
     startListening()
   }, [startListening])
+
+  // Show onboarding on first visit
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !isCompleted && !isOnboardingOpen) {
+      // Show onboarding after a short delay on first visit
+      const timer = setTimeout(() => {
+        openOnboarding(0)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [isCompleted, isOnboardingOpen, openOnboarding])
 
   // --- Redirect to dashboard after sign-in ---
   useEffect(() => {
@@ -131,10 +136,10 @@ export default function MyApp({ Component, pageProps }: ExtendedAppProps) {
         userName={user?.displayName ?? null}
         userEmail={user?.email ?? null}
         userAvatarUrl={user?.photoURL ?? null}
-        onSignIn={() => open('login')}
+        onSignIn={loginWithGoogle}
         onAbout={() => openAbout(0)}
       >
-        <Component {...pageProps} onLoginClick={() => open('login')} onSignupClick={() => open('signup')} />
+        <Component {...pageProps} onLoginClick={loginWithGoogle} onSignupClick={loginWithGoogle} />
       </Layout>
       <Modal show={isOpen} onClose={close} className="!bg-transparent">
         <div className="relative max-w-md mx-auto bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200 dark:border-gray-700 rounded-3xl shadow-2xl px-8 py-10 sm:p-12 flex flex-col items-center text-center space-y-6">
@@ -172,6 +177,7 @@ export default function MyApp({ Component, pageProps }: ExtendedAppProps) {
         </div>
       </Modal>
       <AboutModal />
+      <OnboardingModal />
     </>
   )
 }

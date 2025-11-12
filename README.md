@@ -62,25 +62,30 @@ We believe in learning through doing, with a side of humor. Every component, eve
    - Copy `.env.example` → `.env.local`
    - Fill it in with your Firebase secrets (don't worry, we won't peek)
 
-3. **(Optional, but recommended) Set up the Firebase Emulator for local auth**
+3. **(Optional, but recommended) Set up the Firebase Emulator for local development**
    - Install the Firebase CLI if you haven't:
      ```bash
      npm install -g firebase-tools
      ```
-   - Initialize emulators (first time only):
-     ```bash
-     firebase init emulators
-     ```
-     - Select "Authentication" (and any other services you want).
+   - The emulator configuration is already set up in `firebase.json` with:
+     - **Auth** emulator on port `9099`
+     - **Firestore** emulator on port `8080`
+     - **Storage** emulator on port `9199`
+     - **Emulator UI** on port `9100`
    - Start the emulator suite:
      ```bash
      firebase emulators:start
      ```
+     Or start specific emulators:
+     ```bash
+     firebase emulators:start --only auth,firestore,storage
+     ```
+   - Access the Emulator UI at [http://localhost:9100](http://localhost:9100)
    - In your `.env.local`, set:
      ```
      NEXT_PUBLIC_FIREBASE_USE_EMULATOR=true
      ```
-   - Your app will now use the local Firebase Auth emulator for login/signup/session cookies.
+   - Your app will now use the local Firebase emulators for Auth, Firestore, and Storage.
 
 4. **Run it**
    ```bash
@@ -158,7 +163,12 @@ Here's your five-step recipe:
    ```env
    FIREBASE_SERVICE_ACCOUNT="{...}"
    ```
-5. Set your `NEXT_PUBLIC_FIREBASE_*` vars from your Firebase config
+5. Set your `NEXT_PUBLIC_FIREBASE_*` vars from your Firebase config, including:
+   - `NEXT_PUBLIC_FIREBASE_API_KEY`
+   - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+   - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` (required for Storage functionality)
+   - `NEXT_PUBLIC_FIREBASE_APP_ID`
 
 Need more help? Hit up the `pages/api/session.ts` for cookie management and auth context.
 

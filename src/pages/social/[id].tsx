@@ -21,7 +21,7 @@ export default function PostDetailPage() {
       <div className="container mx-auto py-8">
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-500 dark:text-gray-400">Loading post...</p>
+          <p className="mt-4 text-gray-500 dark:text-gray-200">Loading post...</p>
         </div>
       </div>
     )

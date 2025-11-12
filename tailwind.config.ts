@@ -18,8 +18,14 @@ export default {
           // Example custom colors
           background: 'var(--background)',
           foreground: 'var(--foreground)',
-          brand: '#6366f1',       // Light mode default
-          'brand-dark': '#4f46e5',// Dark mode equivalent
+          brand: '#F97316',       // Orange - Light mode default
+          'brand-dark': '#DC2626',// Red - Dark mode equivalent
+          // Potluck/Thanksgiving colors
+          'potluck-orange': '#F97316',
+          'potluck-red': '#DC2626',
+          'potluck-brown': '#92400E',
+          'potluck-gold': '#FBBF24',
+          'potluck-green': '#16A34A',
         },
         fontFamily: {
           sans: 'var(--font-sans)',

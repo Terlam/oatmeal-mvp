@@ -1,42 +1,51 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 
 type Theme = 'light' | 'dark';
 
 interface ThemeState {
   theme: Theme;
-  setTheme: (theme: Theme) => void;
-  toggle: () => void;
 }
 
-function getInitialTheme(): Theme {
+function getSystemTheme(): Theme {
   if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem('postmeal-theme');
-    if (stored === '"dark"' || stored === 'dark') return 'dark';
-    if (stored === '"light"' || stored === 'light') return 'light';
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
   return 'light';
 }
 
-export const useThemeStore = create<ThemeState>()(
-  persist(
-    (set, get) => ({
-      theme: getInitialTheme(),
-      setTheme: (theme) => {
-        set({ theme });
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('postmeal-theme', theme);
-        }
-      },
-      toggle: () => {
-        const next = get().theme === 'light' ? 'dark' : 'light';
-        set({ theme: next });
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('postmeal-theme', next);
-        }
-      },
-    }),
-    { name: 'postmeal-theme' }
-  )
-);
+export const useThemeStore = create<ThemeState>(() => ({
+  theme: getSystemTheme(),
+}));
+
+// Listen to system theme changes and update the store
+if (typeof window !== 'undefined') {
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  
+  const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
+    const newTheme = e.matches ? 'dark' : 'light';
+    useThemeStore.setState({ theme: newTheme });
+    // Update the HTML class immediately
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+  
+  // Set initial theme on load
+  const initialTheme = getSystemTheme();
+  useThemeStore.setState({ theme: initialTheme });
+  if (initialTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+  
+  // Listen for changes
+  if (mediaQuery.addEventListener) {
+    mediaQuery.addEventListener('change', handleChange);
+  } else {
+    // Fallback for older browsers
+    mediaQuery.addListener(handleChange);
+  }
+}

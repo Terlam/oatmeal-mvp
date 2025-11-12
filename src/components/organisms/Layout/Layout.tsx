@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import {
   Navbar,
   NavbarBrand,
@@ -7,10 +7,10 @@ import {
   NavbarCollapse,
   Avatar,
 } from 'flowbite-react'
-import { Sun, Moon } from 'lucide-react'
 import Link from 'next/link'
 import { useAuthStore, useThemeStore } from '../../../store'
 import { useRouter } from 'next/router'
+import { FcGoogle } from 'react-icons/fc'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -35,13 +35,11 @@ export const Layout: React.FC<LayoutProps> = ({
 }) => {
   const router = useRouter()
   const logout = useAuthStore((s) => s.logout)
+  const loginWithGoogle = useAuthStore((s) => s.loginWithGoogle)
+  const loading = useAuthStore((s) => s.loading)
   const theme = useThemeStore((s) => s.theme)
-  const setTheme = useThemeStore((s) => s.setTheme)
-  const toggle = useThemeStore((s) => s.toggle)
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => { setMounted(true) }, [])
 
-  // Ensure <html> class is always in sync with Zustand theme
+  // Ensure <html> class is always in sync with system theme
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (theme === 'dark') {
@@ -58,67 +56,53 @@ export const Layout: React.FC<LayoutProps> = ({
       <header className="shadow-md transition-colors bg-white dark:bg-gray-900 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
         <Navbar fluid rounded className="bg-transparent dark:bg-transparent">
           <NavbarBrand href="/">
-            <Avatar
-              alt="Logo"
-              img={`/oatmeal_${theme}_logo.png`}
-              rounded
-              size="md"
-            />
-            <span className="self-center text-xl font-semibold ml-2">
-              Oatmeal MVP
+            <span className="self-center text-2xl mr-2">🦃</span>
+            <span className="self-center text-xl font-semibold">
+              Potluck Planner
             </span>
           </NavbarBrand>
           <div className="flex items-center md:order-2 space-x-2">
-            <button
-              onClick={() => {
-                toggle();
-                // Also update <html> class immediately for snappy UI
-                if (typeof window !== 'undefined') {
-                  const next = theme === 'light' ? 'dark' : 'light';
-                  if (next === 'dark') {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                  localStorage.setItem('postmeal-theme', next);
-                  setTheme(next);
-                }
-              }}
-              className="p-2 rounded focus:outline-none focus:ring-2 focus:ring-brand dark:focus:ring-yellow-400 bg-gray-200 dark:bg-gray-800 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {mounted ? (
-                theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />
-              ) : null}
-            </button>
             {isLoading ? (
               <span>Loading…</span>
             ) : isLoggedIn ? (
-              <button
-                onClick={async () => {
-                  await logout()
-                  router.push('/')
-                }}
-                className="ml-2 px-3 py-1 bg-blue-600 text-white rounded dark:bg-yellow-500 dark:text-gray-900 transition-colors"
-              >
-                Sign out
-              </button>
+              <>
+                <Link href="/profile" className="mr-2 block">
+                  <Avatar
+                    img={userAvatarUrl || '/user_icon.png'}
+                    alt={userName || 'User'}
+                    rounded
+                    size="md"
+                    className="cursor-pointer hover:ring-2 hover:ring-yellow-500 dark:hover:ring-yellow-400 transition-all hover:scale-110"
+                  />
+                </Link>
+                <button
+                  onClick={async () => {
+                    await logout()
+                    router.push('/')
+                  }}
+                  className="ml-2 px-3 py-1 bg-blue-600 text-white rounded dark:bg-yellow-500 dark:text-gray-900 transition-colors"
+                >
+                  Sign out
+                </button>
+              </>
             ) : (
               <button
-                onClick={onSignIn}
-                className="ml-2 px-3 py-1 bg-blue-600 text-white rounded-full dark:bg-yellow-500 dark:text-gray-900 transition-colors"
+                onClick={loginWithGoogle}
+                disabled={loading}
+                className="ml-2 px-4 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Sign in 
+                <FcGoogle size={20} />
+                {loading ? 'Signing in...' : 'Sign in with Google'}
               </button>
             )}
             <NavbarToggle />
           </div>
           <NavbarCollapse>
-            <NavbarLink href="/" active>
-              Home
-            </NavbarLink>
             <NavbarLink href="#" onClick={e => { e.preventDefault(); onAbout && onAbout(); }}>About</NavbarLink>
-            <NavbarLink href="/dashboard">Dashboard</NavbarLink>
+            <NavbarLink href="/events" active={router.pathname === '/events'}>Events</NavbarLink>
+            {isLoggedIn && (
+              <NavbarLink href="/dashboard" active={router.pathname === '/dashboard'}>Dashboard</NavbarLink>
+            )}
           </NavbarCollapse>
         </Navbar>
       </header>
@@ -126,15 +110,11 @@ export const Layout: React.FC<LayoutProps> = ({
       <footer className="py-6 mt-auto transition-colors bg-white dark:bg-gray-900 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-t border-gray-200 dark:border-gray-700">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
           <Link href="/" className="flex items-center mb-4 md:mb-0">
-            <Avatar
-              img={`/oatmeal_${theme}_logo.png`}
-              rounded
-              size="sm"
-            />
-            <span className="ml-2 text-lg font-semibold">Oatmeal MVP</span>
+            <span className="text-2xl mr-2">🦃</span>
+            <span className="text-lg font-semibold">Potluck Planner</span>
           </Link>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            © {new Date().getFullYear()} Oatmeal MVP.
+          <p className="text-sm text-gray-500 dark:text-gray-200">
+            © {new Date().getFullYear()} Potluck Planner.
           </p>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <Link href="/privacy" className="text-sm hover:underline">

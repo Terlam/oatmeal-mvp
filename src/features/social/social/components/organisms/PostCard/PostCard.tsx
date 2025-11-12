@@ -75,7 +75,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             <Avatar userId={post.authorId} alt={'User'} />
             <div>
               <div className="font-bold text-lg">{post.title}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">
+              <div className="text-xs text-gray-500 dark:text-gray-200">
                 {formatTimestamp(post.createdAt)}
                 {post.isEdited && ' (edited)'}
                 {post.sharedFromId && ' 🔁 Shared'}
@@ -123,7 +123,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         {/* Content */}
         <div className="text-gray-600 dark:text-gray-300">{post.content}</div>
         {post.description && (
-          <div className="text-sm text-gray-500 dark:text-gray-400">{post.description}</div>
+          <div className="text-sm text-gray-500 dark:text-gray-200">{post.description}</div>
         )}
 
         {/* Media */}
@@ -155,7 +155,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         )}
 
         {/* Stats */}
-        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-200">
           {post.likeCount && post.likeCount > 0 && (
             <span>❤️ {post.likeCount}</span>
           )}

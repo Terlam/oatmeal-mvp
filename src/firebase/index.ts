@@ -1,4 +1,4 @@
-import { adminAuth } from './admin';
+import { adminAuth, adminDb } from './admin';
 import { auth, storage, db } from './clientApp';
 
-export { adminAuth, auth, storage, db };
+export { adminAuth, adminDb, auth, storage, db };

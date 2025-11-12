@@ -65,6 +65,11 @@
     "typescript": "^5",
     "vitest": "^3.1.2"
   },
+  "overrides": {
+    "ajv": "8.17.1",
+    "tough-cookie": "5.0.0",
+    "uri-js": "4.5.0"
+  },
   "eslintConfig": {
     "extends": [
       "plugin:storybook/recommended"

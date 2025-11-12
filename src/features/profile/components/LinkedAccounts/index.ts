@@ -1,0 +1,2 @@
+export { LinkedAccounts } from './LinkedAccounts'
+
