@@ -14,24 +14,32 @@ service cloud.firestore {
       match /menuItems/{itemId} {
         // Anyone authenticated can read
         allow read: if request.auth != null;
-        // Anyone authenticated can create menu items
+        // Any authenticated user can create menu items
         allow create: if request.auth != null;
-        // Creator or host can update/delete
-        allow update, delete: if request.auth != null && 
-          (request.auth.uid == resource.data.createdBy || 
-           request.auth.uid == get(/databases/$(database)/documents/events/$(eventId)).data.hostId);
+        // Any authenticated user can update/delete menu items
+        allow update, delete: if request.auth != null;
       }
       
-      // RSVPs subcollection
-      match /rsvps/{rsvpId} {
+      // RSVPs subcollection - using userId as document ID for efficient rule checking
+      match /rsvps/{userId} {
         // Anyone authenticated can read
         allow read: if request.auth != null;
-        // Anyone authenticated can create/update their own RSVP
-        allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-        allow update: if request.auth != null && request.auth.uid == resource.data.userId;
+        // Users can create their own RSVP
+        // Document ID must be their userId, and data must have matching userId and eventId
+        allow create: if request.auth != null && 
+          request.auth.uid == userId && 
+          request.resource.data.userId == request.auth.uid &&
+          request.resource.data.eventId == eventId;
+        // Users can update their own RSVP
+        // userId and eventId must remain unchanged (if present in update)
+        allow update: if request.auth != null && 
+          request.auth.uid == userId &&
+          // Ensure userId and eventId don't change (if they're in the update)
+          (!('userId' in request.resource.data) || request.resource.data.userId == resource.data.userId) &&
+          (!('eventId' in request.resource.data) || request.resource.data.eventId == resource.data.eventId);
         // Host can delete any RSVP, users can delete their own
         allow delete: if request.auth != null && 
-          (request.auth.uid == resource.data.userId ||
+          (request.auth.uid == userId ||
            request.auth.uid == get(/databases/$(database)/documents/events/$(eventId)).data.hostId);
       }
       
@@ -39,7 +47,7 @@ service cloud.firestore {
       match /comments/{commentId} {
         // Anyone authenticated can read
         allow read: if request.auth != null;
-        // Anyone authenticated can create comments
+        // Any authenticated user can create comments
         allow create: if request.auth != null;
         // Users can update/delete their own comments
         allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;

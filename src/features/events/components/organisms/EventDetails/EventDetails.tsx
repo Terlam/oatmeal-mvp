@@ -56,6 +56,11 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
 
   const isHost = event?.hostId === user?.uid
   const currentRSVP = rsvps.find(r => r.userId === user?.uid)
+  
+  // Calculate total attendees including guests
+  const totalAttendees = rsvps
+    .filter(r => r.status === 'going')
+    .reduce((total, rsvp) => total + 1 + rsvp.guestCount, 0)
 
   const formatDate = (timestamp: any) => {
     if (!timestamp) return 'Date TBD'
@@ -368,7 +373,9 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
               </div>
               <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-200">
                 <Users className="w-5 h-5" />
-                <span>{rsvps.filter(r => r.status === 'going').length} going</span>
+                <span>
+                  {totalAttendees} {totalAttendees === 1 ? 'attendee' : 'attendees'}
+                </span>
               </div>
             </div>
           </div>

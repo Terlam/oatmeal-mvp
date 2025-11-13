@@ -3,7 +3,7 @@ import {
   doc,
   getDocs,
   getDoc,
-  addDoc,
+  setDoc,
   updateDoc,
   deleteDoc,
   serverTimestamp,
@@ -35,16 +35,12 @@ export const getRSVPs = async (eventId: string): Promise<RSVP[]> => {
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as RSVP))
 }
 
-// Get RSVP by user ID
+// Get RSVP by user ID (using userId as document ID)
 export const getRSVPByUser = async (eventId: string, userId: string): Promise<RSVP | null> => {
-  const q = query(
-    collection(db, 'events', eventId, 'rsvps'),
-    where('userId', '==', userId)
-  )
-  const snapshot = await getDocs(q)
-  if (snapshot.empty) return null
-  const doc = snapshot.docs[0]
-  return { id: doc.id, ...doc.data() } as RSVP
+  const rsvpRef = doc(db, 'events', eventId, 'rsvps', userId)
+  const rsvpSnap = await getDoc(rsvpRef)
+  if (!rsvpSnap.exists()) return null
+  return { id: rsvpSnap.id, ...rsvpSnap.data() } as RSVP
 }
 
 // Get RSVPs by status
@@ -61,28 +57,29 @@ export const getRSVPsByStatus = async (
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as RSVP))
 }
 
-// Create RSVP
+// Create RSVP (using userId as document ID for efficient rule checking)
 export const createRSVP = async (
   eventId: string,
   rsvp: Omit<RSVP, 'id' | 'eventId' | 'createdAt' | 'updatedAt'>
 ): Promise<string> => {
-  const rsvpsRef = collection(db, 'events', eventId, 'rsvps')
+  // Use userId as document ID for efficient Firestore rule checking
+  const rsvpRef = doc(db, 'events', eventId, 'rsvps', rsvp.userId)
   const cleanedRSVP = cleanData(rsvp)
   
-  const docRef = await addDoc(rsvpsRef, {
+  await setDoc(rsvpRef, {
     ...cleanedRSVP,
     eventId,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   })
   
-  return docRef.id
+  return rsvp.userId
 }
 
-// Update RSVP
+// Update RSVP (rsvpId is now the userId)
 export const updateRSVP = async (
   eventId: string,
-  rsvpId: string,
+  rsvpId: string, // This is now the userId
   data: Partial<RSVP>
 ): Promise<void> => {
   const rsvpRef = doc(db, 'events', eventId, 'rsvps', rsvpId)
@@ -94,13 +91,13 @@ export const updateRSVP = async (
   })
 }
 
-// Delete RSVP
+// Delete RSVP (rsvpId is now the userId)
 export const deleteRSVP = async (eventId: string, rsvpId: string): Promise<void> => {
   const rsvpRef = doc(db, 'events', eventId, 'rsvps', rsvpId)
   await deleteDoc(rsvpRef)
 }
 
-// Create or update RSVP (upsert)
+// Create or update RSVP (upsert) - uses userId as document ID
 export const upsertRSVP = async (
   eventId: string,
   rsvp: Omit<RSVP, 'id' | 'eventId' | 'createdAt' | 'updatedAt'>
@@ -109,15 +106,15 @@ export const upsertRSVP = async (
   const existingRSVP = await getRSVPByUser(eventId, rsvp.userId)
   
   if (existingRSVP) {
-    // Update existing RSVP
-    await updateRSVP(eventId, existingRSVP.id!, {
+    // Update existing RSVP (using userId as document ID)
+    await updateRSVP(eventId, rsvp.userId, {
       status: rsvp.status,
       guestCount: rsvp.guestCount,
       message: rsvp.message,
     })
-    return existingRSVP.id!
+    return rsvp.userId
   } else {
-    // Create new RSVP
+    // Create new RSVP (using userId as document ID)
     return await createRSVP(eventId, rsvp)
   }
 }
