@@ -61,31 +61,31 @@ const EventsPage: NextPage<EventsPageProps> = ({ user }) => {
       
       {/* Content Container */}
       <div className="relative z-10 container mx-auto py-8 px-4">
-        <div className="rounded-3xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-6 sm:p-8 mt-8 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <div className="rounded-3xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 md:p-8 mt-4 sm:mt-8 mb-4 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
               Events
             </h1>
             <Link href="/events/create">
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto min-h-[44px]">
                 <Plus className="w-4 h-4 mr-2" />
                 Create Event
               </Button>
             </Link>
           </div>
 
-          <div className="flex space-x-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-6">
             <Button
               color={viewMode === 'my' ? 'primary' : 'light'}
               onClick={() => setViewMode('my')}
-              className={viewMode === 'my' ? 'bg-orange-500 hover:bg-orange-600 text-white' : ''}
+              className={`min-h-[44px] ${viewMode === 'my' ? 'bg-orange-500 hover:bg-orange-600 text-white' : ''}`}
             >
               My Events
             </Button>
             <Button
               color={viewMode === 'public' ? 'primary' : 'light'}
               onClick={() => setViewMode('public')}
-              className={viewMode === 'public' ? 'bg-orange-500 hover:bg-orange-600 text-white' : ''}
+              className={`min-h-[44px] ${viewMode === 'public' ? 'bg-orange-500 hover:bg-orange-600 text-white' : ''}`}
             >
               Public Events
             </Button>

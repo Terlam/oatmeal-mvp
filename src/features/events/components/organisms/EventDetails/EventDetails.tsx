@@ -14,6 +14,7 @@ import { EventForm } from '../../molecules/EventForm'
 import { ClaimItemModal } from '../../molecules/ClaimItemModal'
 import { useEvent, useMenuItems, useRSVPs, useEventComments } from '../../../hooks'
 import { useAuthStore } from '@/store/authStore'
+import { useDietaryPreferences } from '@/features/profile/hooks/useDietaryPreferences'
 import { 
   createMenuItem, 
   updateMenuItem, 
@@ -44,6 +45,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
   const { menuItems, loading: menuItemsLoading, refetch: refetchMenuItems } = useMenuItems(eventId)
   const { rsvps, loading: rsvpsLoading, refetch: refetchRSVPs } = useRSVPs(eventId)
   const { comments, loading: commentsLoading, refetch: refetchComments } = useEventComments(eventId)
+  const { preferences: userDietaryPreferences } = useDietaryPreferences(user?.uid)
   
   const [showRSVPForm, setShowRSVPForm] = useState(false)
   const [showMenuItemForm, setShowMenuItemForm] = useState(false)
@@ -55,12 +57,47 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
   const [error, setError] = useState<string | null>(null)
 
   const isHost = event?.hostId === user?.uid
-  const currentRSVP = rsvps.find(r => r.userId === user?.uid)
   
-  // Calculate total attendees including guests
-  const totalAttendees = rsvps
+  // Deduplicate by userId to ensure we don't have duplicate RSVPs
+  // Use the most recent RSVP if there are duplicates (by updatedAt or createdAt)
+  const uniqueRSVPs = rsvps.reduce((acc, rsvp) => {
+    const existing = acc.find(r => r.userId === rsvp.userId)
+    if (!existing) {
+      acc.push(rsvp)
+    } else {
+      // Keep the most recent RSVP based on updatedAt or createdAt
+      const rsvpTime = rsvp.updatedAt 
+        ? (rsvp.updatedAt.toMillis ? rsvp.updatedAt.toMillis() : rsvp.updatedAt.seconds * 1000)
+        : rsvp.createdAt
+          ? (rsvp.createdAt.toMillis ? rsvp.createdAt.toMillis() : rsvp.createdAt.seconds * 1000)
+          : 0
+      const existingTime = existing.updatedAt
+        ? (existing.updatedAt.toMillis ? existing.updatedAt.toMillis() : existing.updatedAt.seconds * 1000)
+        : existing.createdAt
+          ? (existing.createdAt.toMillis ? existing.createdAt.toMillis() : existing.createdAt.seconds * 1000)
+          : 0
+      if (rsvpTime > existingTime) {
+        const index = acc.indexOf(existing)
+        acc[index] = rsvp
+      }
+    }
+    return acc
+  }, [] as typeof rsvps)
+  
+  const currentRSVP = uniqueRSVPs.find(r => r.userId === user?.uid)
+  
+  // Calculate separate counts for each status (including guests)
+  const goingCount = uniqueRSVPs
     .filter(r => r.status === 'going')
-    .reduce((total, rsvp) => total + 1 + rsvp.guestCount, 0)
+    .reduce((total, rsvp) => total + 1 + (rsvp.guestCount || 0), 0)
+  
+  const maybeCount = uniqueRSVPs
+    .filter(r => r.status === 'maybe')
+    .reduce((total, rsvp) => total + 1 + (rsvp.guestCount || 0), 0)
+  
+  const notGoingCount = uniqueRSVPs
+    .filter(r => r.status === 'not_going')
+    .reduce((total, rsvp) => total + 1 + (rsvp.guestCount || 0), 0)
 
   const formatDate = (timestamp: any) => {
     if (!timestamp) return 'Date TBD'
@@ -79,8 +116,17 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
 
   const formatTime = (time: string) => {
     if (!time) return 'Time TBD'
-    // If time is in HH:MM format, convert to 12-hour format
-    if (time.includes(':')) {
+    // If time is already in 12-hour format (contains AM/PM), validate and return as-is
+    if (time.includes('AM') || time.includes('PM')) {
+      const match = time.match(/(\d+):(\d+)\s*(AM|PM)/i)
+      if (!match) return 'Time TBD'
+      const hours = parseInt(match[1], 10)
+      const minutes = parseInt(match[2], 10)
+      if (isNaN(hours) || isNaN(minutes)) return 'Time TBD'
+      return time // Return as-is if valid
+    }
+    // If time is in HH:MM format (24-hour), convert to 12-hour format
+    if (time.includes(':') && !time.includes('PM') && !time.includes('AM')) {
       const [hoursStr, minutesStr] = time.split(':')
       const hours = parseInt(hoursStr, 10)
       const minutes = parseInt(minutesStr, 10)
@@ -93,15 +139,6 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
       const hour12 = hours % 12 || 12
       const ampm = hours >= 12 ? 'PM' : 'AM'
       return `${hour12}:${minutes.toString().padStart(2, '0')} ${ampm}`
-    }
-    // If time is already in 12-hour format (contains AM/PM), validate it
-    if (time.includes('AM') || time.includes('PM')) {
-      const match = time.match(/(\d+):(\d+)\s*(AM|PM)/i)
-      if (!match) return 'Time TBD'
-      const hours = parseInt(match[1], 10)
-      const minutes = parseInt(match[2], 10)
-      if (isNaN(hours) || isNaN(minutes)) return 'Time TBD'
-      return time // Return as-is if valid
     }
     return 'Time TBD' // Default if format is unknown
   }
@@ -327,14 +364,14 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
       )}
 
       {/* Event Header */}
-      <Card className="p-6 bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-800">
-        <div className="flex items-start justify-between">
+      <Card className="p-4 sm:p-6 bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-800">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="flex-1">
             <div className="flex items-center space-x-3 mb-4">
               <Avatar
                 src={event.hostAvatarUrl || '/user_icon.png'}
                 alt={event.hostName}
-                className="w-12 h-12"
+                className="w-10 h-10 sm:w-12 sm:h-12"
               />
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-200">
@@ -342,7 +379,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
                 </p>
               </div>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
               {event.title}
             </h1>
             {event.description && (
@@ -371,11 +408,19 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
                   </span>
                 )}
               </div>
-              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-200">
-                <Users className="w-5 h-5" />
-                <span>
-                  {totalAttendees} {totalAttendees === 1 ? 'attendee' : 'attendees'}
-                </span>
+              <div className="flex flex-col space-y-1 text-gray-600 dark:text-gray-200">
+                <div className="flex items-center space-x-2">
+                  <Users className="w-5 h-5" />
+                  <span className="text-sm sm:text-base">
+                    <span className="text-green-600 dark:text-green-400 font-semibold">{goingCount} going</span>
+                    {maybeCount > 0 && (
+                      <span className="ml-2 text-yellow-600 dark:text-yellow-400">{maybeCount} maybe</span>
+                    )}
+                    {notGoingCount > 0 && (
+                      <span className="ml-2 text-red-600 dark:text-red-400">{notGoingCount} not going</span>
+                    )}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -383,7 +428,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
             <Button
               color="light"
               onClick={() => setShowEditEventForm(true)}
-              className="ml-4"
+              className="w-full sm:w-auto min-h-[44px] sm:ml-4"
             >
               <Edit2 className="w-4 h-4 mr-2" />
               Edit Event
@@ -393,15 +438,15 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
       </Card>
 
       {/* RSVP Section */}
-      <Card className="p-6 bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-800">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+      <Card className="p-4 sm:p-6 bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-800">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
             RSVP
           </h2>
           {!currentRSVP && (
             <Button
               onClick={() => setShowRSVPForm(true)}
-              className="bg-orange-500 hover:bg-orange-600 text-white"
+              className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto min-h-[44px]"
             >
               <Plus className="w-4 h-4 mr-2" />
               RSVP
@@ -423,13 +468,13 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
             </Button>
           </div>
         ) : null}
-        <RSVPList rsvps={rsvps} />
+        <RSVPList rsvps={uniqueRSVPs} />
       </Card>
 
       {/* Menu Items Section */}
-      <Card className="p-6 bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-800">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+      <Card className="p-4 sm:p-6 bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-800">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
             Menu Items
           </h2>
           {user && (
@@ -438,7 +483,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
                 setEditingMenuItem(null)
                 setShowMenuItemForm(true)
               }}
-              className="bg-orange-500 hover:bg-orange-600 text-white"
+              className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto min-h-[44px]"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Item
@@ -471,12 +516,13 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
           onDelete={handleDeleteMenuItem}
           currentUserId={user?.uid}
           isHost={isHost}
+          userDietaryPreferences={userDietaryPreferences || undefined}
         />
       </Card>
 
       {/* Comments Section */}
-      <Card className="p-6 bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-800">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+      <Card className="p-4 sm:p-6 bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-800">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">
           Comments
         </h2>
         {user && (
@@ -497,9 +543,9 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
       </Card>
 
       {/* Modals */}
-      <Modal show={showRSVPForm} onClose={() => setShowRSVPForm(false)}>
+      <Modal show={showRSVPForm} onClose={() => setShowRSVPForm(false)} className="w-full max-w-md mx-auto">
         <ModalHeader>RSVP</ModalHeader>
-        <ModalBody>
+        <ModalBody className="p-4 sm:p-6">
           <RSVPForm
             onSubmit={handleRSVP}
             loading={submitting}
@@ -513,11 +559,11 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
       <Modal show={showMenuItemForm} onClose={() => {
         setShowMenuItemForm(false)
         setEditingMenuItem(null)
-      }}>
+      }} className="w-full max-w-md mx-auto">
         <ModalHeader>
           {editingMenuItem ? 'Edit Menu Item' : 'Add Menu Item'}
         </ModalHeader>
-        <ModalBody>
+        <ModalBody className="p-4 sm:p-6">
           <MenuItemForm
             onSubmit={editingMenuItem ? handleUpdateMenuItem : handleCreateMenuItem}
             loading={submitting}
@@ -532,9 +578,9 @@ export const EventDetails: React.FC<EventDetailsProps> = ({
         </ModalBody>
       </Modal>
 
-      <Modal show={showEditEventForm} onClose={() => setShowEditEventForm(false)}>
+      <Modal show={showEditEventForm} onClose={() => setShowEditEventForm(false)} className="w-full max-w-2xl mx-auto">
         <ModalHeader>Edit Event</ModalHeader>
-        <ModalBody>
+        <ModalBody className="p-4 sm:p-6">
           <EventForm
             onSubmit={async (eventData) => {
               await handleUpdateEvent(eventData)

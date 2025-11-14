@@ -56,11 +56,11 @@ export const OnboardingModal: React.FC = () => {
             <X size={24} />
           </button>
         )}
-        {/* Spwoo stands out with a floating, offset effect */}
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 z-20 drop-shadow-xl" style={{ filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.18))' }}>
-          <Spwoo state={current.state} size={180} catchphrase={current.catchphrase} />
+        {/* Spwoo stands out with a floating, offset effect - positioned lower for mobile visibility */}
+        <div className="absolute top-4 sm:top-8 left-1/2 -translate-x-1/2 z-20 drop-shadow-xl" style={{ filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.18))' }}>
+          <Spwoo state={current.state} size={120} catchphrase={current.catchphrase} />
         </div>
-        <div className="pt-24" />
+        <div className="pt-32 sm:pt-40" />
         <h2 className="fun-heading text-3xl sm:text-4xl text-orange-600 dark:text-orange-400 mb-2">{current.title}</h2>
         <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-200 font-medium mb-4">{current.text}</p>
         <div className="flex justify-between w-full mt-4 gap-4">

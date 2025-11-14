@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Input, Label, Button } from '@/components/atoms'
 import { Select, Textarea, Checkbox } from 'flowbite-react'
 import type { MenuItem, MenuItemCategory } from '@/features/events/types'
+import type { MenuItemDietaryInfo, FoodAllergy } from '@/types/dietary'
+import { DIETARY_RESTRICTIONS, FOOD_ALLERGIES } from '@/types/dietary'
 
 export interface MenuItemFormProps {
   onSubmit: (item: Omit<MenuItem, 'id' | 'eventId' | 'createdAt' | 'updatedAt'>, imageFile?: File) => Promise<void>
@@ -24,12 +26,37 @@ export const MenuItemForm: React.FC<MenuItemFormProps> = ({
   const [description, setDescription] = useState(defaultValues?.description || '')
   const [category, setCategory] = useState<MenuItemCategory>(defaultValues?.category || 'other')
   const [suggestedServingSize, setSuggestedServingSize] = useState(defaultValues?.suggestedServingSize || '')
+  // Dietary restrictions state
   const [vegetarian, setVegetarian] = useState(defaultValues?.dietaryInfo?.vegetarian || false)
   const [vegan, setVegan] = useState(defaultValues?.dietaryInfo?.vegan || false)
   const [glutenFree, setGlutenFree] = useState(defaultValues?.dietaryInfo?.glutenFree || false)
-  const [nutFree, setNutFree] = useState(defaultValues?.dietaryInfo?.nutFree || false)
   const [dairyFree, setDairyFree] = useState(defaultValues?.dietaryInfo?.dairyFree || false)
-  const [otherDietary, setOtherDietary] = useState(defaultValues?.dietaryInfo?.other?.join(', ') || '')
+  const [nutFree, setNutFree] = useState(defaultValues?.dietaryInfo?.nutFree || false)
+  const [soyFree, setSoyFree] = useState(defaultValues?.dietaryInfo?.soyFree || false)
+  const [eggFree, setEggFree] = useState(defaultValues?.dietaryInfo?.eggFree || false)
+  const [fishFree, setFishFree] = useState(defaultValues?.dietaryInfo?.fishFree || false)
+  const [shellfishFree, setShellfishFree] = useState(defaultValues?.dietaryInfo?.shellfishFree || false)
+  const [halal, setHalal] = useState(defaultValues?.dietaryInfo?.halal || false)
+  const [kosher, setKosher] = useState(defaultValues?.dietaryInfo?.kosher || false)
+  const [lowSodium, setLowSodium] = useState(defaultValues?.dietaryInfo?.lowSodium || false)
+  const [lowSugar, setLowSugar] = useState(defaultValues?.dietaryInfo?.lowSugar || false)
+  const [keto, setKeto] = useState(defaultValues?.dietaryInfo?.keto || false)
+  const [paleo, setPaleo] = useState(defaultValues?.dietaryInfo?.paleo || false)
+  const [whole30, setWhole30] = useState(defaultValues?.dietaryInfo?.whole30 || false)
+  
+  // Allergen information
+  const [containsAllergens, setContainsAllergens] = useState<FoodAllergy[]>(
+    defaultValues?.dietaryInfo?.containsAllergens || []
+  )
+  const [mayContainAllergens, setMayContainAllergens] = useState<FoodAllergy[]>(
+    defaultValues?.dietaryInfo?.mayContainAllergens || []
+  )
+  const [customInfo, setCustomInfo] = useState(
+    defaultValues?.dietaryInfo?.customInfo?.join(', ') || ''
+  )
+  const [preparationNotes, setPreparationNotes] = useState(
+    defaultValues?.dietaryInfo?.preparationNotes || ''
+  )
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(defaultValues?.imageUrl || null)
   const [isOfferedByCreator, setIsOfferedByCreator] = useState(defaultValues?.isOfferedByCreator || false)
@@ -72,18 +99,32 @@ export const MenuItemForm: React.FC<MenuItemFormProps> = ({
       finalImageUrl = defaultValues.imageUrl
     }
     
-    const otherDietaryArray = otherDietary
-      ? otherDietary.split(',').map(item => item.trim()).filter(Boolean)
+    const customInfoArray = customInfo
+      ? customInfo.split(',').map(item => item.trim()).filter(Boolean)
       : undefined
     
-    // Clean up dietary info - remove undefined values
-    const dietaryInfo: any = {}
+    // Build dietary info object
+    const dietaryInfo: MenuItemDietaryInfo = {}
     if (vegetarian) dietaryInfo.vegetarian = true
     if (vegan) dietaryInfo.vegan = true
     if (glutenFree) dietaryInfo.glutenFree = true
-    if (nutFree) dietaryInfo.nutFree = true
     if (dairyFree) dietaryInfo.dairyFree = true
-    if (otherDietaryArray && otherDietaryArray.length > 0) dietaryInfo.other = otherDietaryArray
+    if (nutFree) dietaryInfo.nutFree = true
+    if (soyFree) dietaryInfo.soyFree = true
+    if (eggFree) dietaryInfo.eggFree = true
+    if (fishFree) dietaryInfo.fishFree = true
+    if (shellfishFree) dietaryInfo.shellfishFree = true
+    if (halal) dietaryInfo.halal = true
+    if (kosher) dietaryInfo.kosher = true
+    if (lowSodium) dietaryInfo.lowSodium = true
+    if (lowSugar) dietaryInfo.lowSugar = true
+    if (keto) dietaryInfo.keto = true
+    if (paleo) dietaryInfo.paleo = true
+    if (whole30) dietaryInfo.whole30 = true
+    if (containsAllergens.length > 0) dietaryInfo.containsAllergens = containsAllergens
+    if (mayContainAllergens.length > 0) dietaryInfo.mayContainAllergens = mayContainAllergens
+    if (customInfoArray && customInfoArray.length > 0) dietaryInfo.customInfo = customInfoArray
+    if (preparationNotes.trim()) dietaryInfo.preparationNotes = preparationNotes.trim()
     
     // For new items: pass imageFile separately (not uploaded yet)
     // For editing: imageUrl is already set from onImageUpload above
@@ -161,57 +202,241 @@ export const MenuItemForm: React.FC<MenuItemFormProps> = ({
 
       <div>
         <Label>Dietary Information</Label>
-        <div className="space-y-2 mt-2">
-          <div className="flex items-center">
-            <Checkbox
-              id="vegetarian"
-              checked={vegetarian}
-              onChange={(e) => setVegetarian(e.target.checked)}
-            />
-            <Label htmlFor="vegetarian" className="ml-2">Vegetarian</Label>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+          Select all dietary restrictions and preferences this dish satisfies.
+        </p>
+        
+        <div className="space-y-3">
+          {/* Lifestyle */}
+          <div>
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Lifestyle</h4>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center">
+                <Checkbox
+                  id="vegetarian"
+                  checked={vegetarian}
+                  onChange={(e) => setVegetarian(e.target.checked)}
+                />
+                <Label htmlFor="vegetarian" className="ml-2">🥬 Vegetarian</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="vegan"
+                  checked={vegan}
+                  onChange={(e) => setVegan(e.target.checked)}
+                />
+                <Label htmlFor="vegan" className="ml-2">🌱 Vegan</Label>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center">
-            <Checkbox
-              id="vegan"
-              checked={vegan}
-              onChange={(e) => setVegan(e.target.checked)}
-            />
-            <Label htmlFor="vegan" className="ml-2">Vegan</Label>
+
+          {/* Allergen-Free */}
+          <div>
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Allergen-Free</h4>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center">
+                <Checkbox
+                  id="glutenFree"
+                  checked={glutenFree}
+                  onChange={(e) => setGlutenFree(e.target.checked)}
+                />
+                <Label htmlFor="glutenFree" className="ml-2">🌾 Gluten Free</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="dairyFree"
+                  checked={dairyFree}
+                  onChange={(e) => setDairyFree(e.target.checked)}
+                />
+                <Label htmlFor="dairyFree" className="ml-2">🥛 Dairy Free</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="nutFree"
+                  checked={nutFree}
+                  onChange={(e) => setNutFree(e.target.checked)}
+                />
+                <Label htmlFor="nutFree" className="ml-2">🥜 Nut Free</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="soyFree"
+                  checked={soyFree}
+                  onChange={(e) => setSoyFree(e.target.checked)}
+                />
+                <Label htmlFor="soyFree" className="ml-2">🫘 Soy Free</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="eggFree"
+                  checked={eggFree}
+                  onChange={(e) => setEggFree(e.target.checked)}
+                />
+                <Label htmlFor="eggFree" className="ml-2">🥚 Egg Free</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="fishFree"
+                  checked={fishFree}
+                  onChange={(e) => setFishFree(e.target.checked)}
+                />
+                <Label htmlFor="fishFree" className="ml-2">🐟 Fish Free</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="shellfishFree"
+                  checked={shellfishFree}
+                  onChange={(e) => setShellfishFree(e.target.checked)}
+                />
+                <Label htmlFor="shellfishFree" className="ml-2">🦐 Shellfish Free</Label>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center">
-            <Checkbox
-              id="glutenFree"
-              checked={glutenFree}
-              onChange={(e) => setGlutenFree(e.target.checked)}
-            />
-            <Label htmlFor="glutenFree" className="ml-2">Gluten Free</Label>
+
+          {/* Religious */}
+          <div>
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Religious</h4>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center">
+                <Checkbox
+                  id="halal"
+                  checked={halal}
+                  onChange={(e) => setHalal(e.target.checked)}
+                />
+                <Label htmlFor="halal" className="ml-2">☪️ Halal</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="kosher"
+                  checked={kosher}
+                  onChange={(e) => setKosher(e.target.checked)}
+                />
+                <Label htmlFor="kosher" className="ml-2">✡️ Kosher</Label>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center">
-            <Checkbox
-              id="nutFree"
-              checked={nutFree}
-              onChange={(e) => setNutFree(e.target.checked)}
-            />
-            <Label htmlFor="nutFree" className="ml-2">Nut Free</Label>
-          </div>
-          <div className="flex items-center">
-            <Checkbox
-              id="dairyFree"
-              checked={dairyFree}
-              onChange={(e) => setDairyFree(e.target.checked)}
-            />
-            <Label htmlFor="dairyFree" className="ml-2">Dairy Free</Label>
+
+          {/* Health/Diet */}
+          <div>
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Health & Diet</h4>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center">
+                <Checkbox
+                  id="lowSodium"
+                  checked={lowSodium}
+                  onChange={(e) => setLowSodium(e.target.checked)}
+                />
+                <Label htmlFor="lowSodium" className="ml-2">🧂 Low Sodium</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="lowSugar"
+                  checked={lowSugar}
+                  onChange={(e) => setLowSugar(e.target.checked)}
+                />
+                <Label htmlFor="lowSugar" className="ml-2">🍬 Low Sugar</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="keto"
+                  checked={keto}
+                  onChange={(e) => setKeto(e.target.checked)}
+                />
+                <Label htmlFor="keto" className="ml-2">🥑 Keto</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="paleo"
+                  checked={paleo}
+                  onChange={(e) => setPaleo(e.target.checked)}
+                />
+                <Label htmlFor="paleo" className="ml-2">🥩 Paleo</Label>
+              </div>
+              <div className="flex items-center">
+                <Checkbox
+                  id="whole30"
+                  checked={whole30}
+                  onChange={(e) => setWhole30(e.target.checked)}
+                />
+                <Label htmlFor="whole30" className="ml-2">🥗 Whole30</Label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <div>
-        <Label htmlFor="otherDietary">Other Dietary Restrictions</Label>
+        <Label htmlFor="containsAllergens">Contains Allergens (Important!)</Label>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+          Select allergens that are definitely present in this dish.
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          {Object.values(FOOD_ALLERGIES).map((allergy) => (
+            <div key={allergy.id} className="flex items-center">
+              <Checkbox
+                id={`contains-${allergy.id}`}
+                checked={containsAllergens.includes(allergy.id)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setContainsAllergens([...containsAllergens, allergy.id])
+                  } else {
+                    setContainsAllergens(containsAllergens.filter(a => a !== allergy.id))
+                  }
+                }}
+              />
+              <Label htmlFor={`contains-${allergy.id}`} className="ml-2">
+                {allergy.icon} {allergy.label}
+              </Label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="mayContainAllergens">May Contain Allergens (Cross-Contamination)</Label>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+          Select allergens that may be present due to shared equipment or preparation area.
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          {Object.values(FOOD_ALLERGIES).map((allergy) => (
+            <div key={allergy.id} className="flex items-center">
+              <Checkbox
+                id={`may-contain-${allergy.id}`}
+                checked={mayContainAllergens.includes(allergy.id)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setMayContainAllergens([...mayContainAllergens, allergy.id])
+                  } else {
+                    setMayContainAllergens(mayContainAllergens.filter(a => a !== allergy.id))
+                  }
+                }}
+              />
+              <Label htmlFor={`may-contain-${allergy.id}`} className="ml-2">
+                {allergy.icon} {allergy.label}
+              </Label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="customInfo">Custom Dietary Information</Label>
         <Input
-          id="otherDietary"
-          value={otherDietary}
-          onChange={(e) => setOtherDietary(e.target.value)}
-          placeholder="Comma-separated list"
+          id="customInfo"
+          value={customInfo}
+          onChange={(e) => setCustomInfo(e.target.value)}
+          placeholder="Comma-separated list (e.g., low FODMAP, AIP diet)"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="preparationNotes">Preparation Notes</Label>
+        <Textarea
+          id="preparationNotes"
+          value={preparationNotes}
+          onChange={(e) => setPreparationNotes(e.target.value)}
+          placeholder="e.g., Prepared in a facility that processes nuts"
+          rows={2}
         />
       </div>
 

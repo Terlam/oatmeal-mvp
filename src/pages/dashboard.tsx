@@ -39,15 +39,15 @@ const Dashboard: NextPage = () => {
       
       {/* Content Container */}
       <div className="relative z-10 p-4 sm:p-8 max-w-2xl mx-auto">
-        <div className="rounded-3xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-6 sm:p-8 mt-8 mb-8">
-          <div className="flex items-center mb-6">
+        <div className="rounded-3xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 md:p-8 mt-4 sm:mt-8 mb-4 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
             <Avatar
               src={'/user_icon.png'}
               alt={displayName}
-              className="mr-4 w-14 h-14"
+              className="w-12 h-12 sm:w-14 sm:h-14 sm:mr-4"
             />
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
                 Hey {displayName}, ready to plan the perfect potluck? 🦃
               </h1>
               <p className="text-gray-500 dark:text-gray-200 text-sm mt-1">
@@ -61,7 +61,7 @@ const Dashboard: NextPage = () => {
               <Link
                 key={feature.href}
                 href={feature.href}
-                className="block rounded-xl bg-white/90 dark:bg-gray-800/90 shadow-md hover:shadow-lg transition-shadow p-5 flex items-center gap-4 animate-fade-in"
+                className="block rounded-xl bg-white/90 dark:bg-gray-800/90 shadow-md hover:shadow-lg transition-shadow p-4 sm:p-5 flex items-center gap-3 sm:gap-4 animate-fade-in min-h-[60px]"
               >
                 <div className="w-12 h-12 flex items-center justify-center text-3xl rounded-full bg-orange-100 dark:bg-orange-900">
                   {feature.icon}

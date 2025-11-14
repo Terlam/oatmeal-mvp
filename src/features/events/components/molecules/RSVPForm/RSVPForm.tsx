@@ -19,7 +19,7 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({
   onCancel,
 }) => {
   const [status, setStatus] = useState<RSVPStatus>(defaultValues?.status || 'going')
-  const [guestCount, setGuestCount] = useState(defaultValues?.guestCount?.toString() || '1')
+  const [guestCount, setGuestCount] = useState(defaultValues?.guestCount?.toString() || '0')
   const [message, setMessage] = useState(defaultValues?.message || '')
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,7 +31,7 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({
       userEmail: '', // Will be set by the service
       userAvatarUrl: '', // Will be set by the service
       status,
-      guestCount: parseInt(guestCount) || 1,
+      guestCount: parseInt(guestCount) || 0,
       message: message || undefined,
     })
   }
@@ -63,7 +63,7 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({
         <Input
           id="guestCount"
           type="number"
-          min="1"
+          min="0"
           value={guestCount}
           onChange={(e) => setGuestCount(e.target.value)}
           required

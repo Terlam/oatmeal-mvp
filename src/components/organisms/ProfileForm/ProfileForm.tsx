@@ -15,9 +15,10 @@ export interface ProfileData {
 interface ProfileFormProps {
   user: User
   onUpdate: (data: ProfileData) => Promise<void>
+  onCancel?: () => void
 }
 
-export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onUpdate }) => {
+export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onUpdate, onCancel }) => {
   const [firstName, setFirstName] = useState(user.displayName?.split(' ')[0] || '')
   const [lastName, setLastName]   = useState(user.displayName?.split(' ')[1] || '')
   const [avatarPreview, setAvatarPreview] = useState<string>(user.photoURL || '/user.jpg')
@@ -113,16 +114,29 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onUpdate }) => {
           <p className="text-green-600 text-sm text-center">Profile updated!</p>
         )}
 
-        <Button
-          type="submit"
-          disabled={submitting}
-          className={clsx(
-            'w-full',
-            submitting ? 'opacity-50' : 'opacity-100'
+        <div className="flex gap-3">
+          {onCancel && (
+            <Button
+              type="button"
+              color="light"
+              onClick={onCancel}
+              disabled={submitting}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
           )}
-        >
-          {submitting ? 'Saving...' : 'Save Changes'}
-        </Button>
+          <Button
+            type="submit"
+            disabled={submitting}
+            className={clsx(
+              onCancel ? 'flex-1' : 'w-full',
+              submitting ? 'opacity-50' : 'opacity-100'
+            )}
+          >
+            {submitting ? 'Saving...' : 'Save Changes'}
+          </Button>
+        </div>
       </form>
     </Card>
   )

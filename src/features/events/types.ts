@@ -1,4 +1,5 @@
 import { Timestamp } from 'firebase/firestore'
+import type { MenuItemDietaryInfo } from '@/types/dietary'
 
 export interface Event {
   id?: string
@@ -32,14 +33,7 @@ export interface MenuItem {
   description?: string
   category: 'appetizer' | 'main' | 'side' | 'dessert' | 'beverage' | 'other'
   suggestedServingSize?: string
-  dietaryInfo?: {
-    vegetarian?: boolean
-    vegan?: boolean
-    glutenFree?: boolean
-    nutFree?: boolean
-    dairyFree?: boolean
-    other?: string[]
-  }
+  dietaryInfo?: MenuItemDietaryInfo
   imageUrl?: string
   isClaimed: boolean
   claimedBy?: string // userId who claimed (can be different from createdBy)

@@ -1,8 +1,10 @@
-# 🥣 Oatmeal MVP - The Teaching Template
+# 🍽️ Potluck Planner
 
-Welcome to your new favorite flavor of MVP — warm, reliable, and outrageously useful out of the box. This isn't your average boilerplate. This is **Oatmeal MVP**: a teaching template that believes in good defaults, great structure, and helping you build your next big idea without crying over CSS or authentication logic.
+**Plan Perfect Potluck Meals, Together**
 
-Think of it as a cooking show for developers - we show you how to make the perfect bowl of code, step by step, with plenty of personality along the way.
+Potluck Planner is a family-friendly event planning app that makes organizing potluck gatherings effortless. Create events, coordinate dishes, track RSVPs with guest counts, and ensure everyone has a great time!
+
+Built with Next.js, Firebase, and a mobile-first approach, Potluck Planner helps families and friends coordinate delicious meals together without the hassle.
 
 ---
 
@@ -25,27 +27,37 @@ Think of it as a cooking show for developers - we show you how to make the perfe
 
 ## 📖 About
 
-Oatmeal MVP is a deliciously prepared dev environment for makers, designers, and late-night tinkerers who want to build fast and smart. With Firebase Auth, a layout system that won't quit, and UI pieces you'll actually reuse, this starter kit gets out of your way and lets your product shine.
+Potluck Planner simplifies event coordination for families and friends. Whether you're planning a Thanksgiving feast, a summer BBQ, or any family gathering, Potluck Planner helps you:
 
-_Think of it as oatmeal: a solid base for whatever you want to sprinkle on top — whether it's LMS modules, event planning features, or a dashboard for your pet hamster's crypto wallet._
+- **Create Events**: Set dates, times, locations, and share with your family
+- **Manage Menus**: Add dishes to your menu - both hosts and guests can contribute
+- **Track RSVPs**: See who's coming and how many guests they're bringing
+- **Coordinate Dishes**: Claim items you want to bring, upload photos, and track dietary restrictions
+- **Stay Organized**: Everything in one place, accessible from any device
 
-### 🎯 **Teaching Philosophy**
+### 🎯 **Features**
 
-We believe in learning through doing, with a side of humor. Every component, every script, every comment is designed to teach you something new while keeping you entertained. It's like having a coding mentor who's also a stand-up comedian.
+- Mobile-first responsive design that works beautifully on phones and tablets
+- Real-time updates with Firebase Firestore
+- Google Sign-In for easy access
+- Photo uploads for menu items
+- Guest count tracking with automatic attendee calculations
+- Dietary restriction tracking (vegetarian, vegan, gluten-free, etc.)
 
 ---
 
-## ⚙️ Features
+## ⚙️ Technical Features
 
-- 🛡 **Authentication**: Firebase Auth with Google + Email/Password.
-- 🧱 **Atomic Components**: Structured and reusable: `atoms`, `molecules`, `organisms`.
-- 🧠 **State Management**: Choose between Zustand or Context (we stay chill either way).
-- 🧩 **Layout System**: Header, Footer, Theme toggle — baked in.
-- 🌐 **Routing**: SSR + protected routes with Firebase session cookies.
-- 🎨 **Tailwind + Flowbite**: Beautiful, responsive components that respect dark mode and your brain.
-- 🧪 **Testing Stack**: Vitest, Testing Library, MSW — because real devs test things.
-- 📚 **Storybook**: Component playground, dark mode included.
-- 🥣 **Interactive Scripts**: Generate components and features with personality.
+- 🛡 **Authentication**: Firebase Auth with Google Sign-In
+- 🧱 **Component Architecture**: Atomic Design with `atoms`, `molecules`, `organisms`
+- 🧠 **State Management**: Zustand for global state
+- 🧩 **Layout System**: Responsive header, footer, and navigation
+- 🌐 **Routing**: Next.js static export with Firebase Hosting
+- 🎨 **Styling**: Tailwind CSS + Flowbite with dark mode support
+- 📱 **Mobile-First**: Fully responsive design optimized for phones and tablets
+- 🔥 **Firebase Integration**: Firestore, Storage, and Authentication
+- 🧪 **Testing**: Vitest and React Testing Library
+- 📚 **Storybook**: Component documentation and testing
 
 ---
 
@@ -58,9 +70,12 @@ We believe in learning through doing, with a side of humor. Every component, eve
    npm install
    ```
 
-2. **Prep your .env file**
-   - Copy `.env.example` → `.env.local`
-   - Fill it in with your Firebase secrets (don't worry, we won't peek)
+2. **Set up Firebase Configuration**
+   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
+   - Enable Authentication (Google Sign-In)
+   - Enable Firestore Database
+   - Enable Storage
+   - Create `.env.local` and add your Firebase configuration (see [Firebase Setup](#firebase-setup) below)
 
 3. **(Optional, but recommended) Set up the Firebase Emulator for local development**
    - Install the Firebase CLI if you haven't:
@@ -126,51 +141,84 @@ Each generator will ask you questions about what you're building and create a co
 
 ---
 
-## 📚 Teaching Examples
+## 🚀 Deployment
 
-### **OatmealBowl Feature**
-Located in `src/features/oatmealBowl/`, this is our flagship teaching example. It demonstrates:
+Potluck Planner is configured for deployment to Firebase Hosting.
 
-- **Service Layer Pattern**: Clean separation of business logic
-- **Custom Hooks**: State management and data fetching
-- **Component Composition**: Building complex UIs from simple parts
-- **TypeScript Best Practices**: Type safety and interfaces
-- **Testing Strategies**: Comprehensive test coverage
+### Deploy to Firebase:
 
-### **UserCard Component**
-Located in `src/components/molecules/UserCard/`, this shows:
+1. **Build the app**:
+   ```bash
+   npm run build
+   ```
 
-- **Props Interface Design**: How to structure component APIs
-- **Conditional Rendering**: Dynamic UI based on data
-- **Component Composition**: Using atoms to build molecules
-- **TypeScript Patterns**: Proper typing and interfaces
+2. **Deploy everything**:
+   ```bash
+   firebase deploy
+   ```
+
+3. **Deploy specific services**:
+   ```bash
+   firebase deploy --only hosting
+   firebase deploy --only firestore:rules
+   firebase deploy --only storage:rules
+   ```
+
+Your app will be live at `https://your-project.web.app`
+
+For detailed setup instructions, see `GRANTFAMILYFUNC_SETUP.md`.
 
 ---
 
 ## 🔐 Firebase Setup
 
-You'll need:
-- A Firebase project
-- Auth methods enabled
-- A service account JSON
+Potluck Planner requires Firebase for authentication, database, and file storage.
 
-Here's your five-step recipe:
+### Quick Setup:
 
-1. Go to [Firebase Console](https://console.firebase.google.com)
-2. Enable Email/Password and Google auth
-3. Generate a service account private key
-4. Copy it into `.env.local` like:
+1. **Create a Firebase Project**
+   - Go to [Firebase Console](https://console.firebase.google.com)
+   - Create a new project (e.g., "Potluck Planner")
+
+2. **Enable Services**
+   - **Authentication**: Enable Google Sign-In provider
+   - **Firestore Database**: Create database in production mode
+   - **Storage**: Enable Firebase Storage
+
+3. **Get Configuration Values**
+   - Go to Project Settings > Your apps > Web app
+   - Copy your Firebase config values
+
+4. **Set Up Environment Variables**
+   Create a `.env.local` file in the root directory:
    ```env
-   FIREBASE_SERVICE_ACCOUNT="{...}"
+   # Firebase Configuration
+   NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+   
+   # For production, set to false
+   NEXT_PUBLIC_FIREBASE_USE_EMULATOR=false
+   
+   # Service Account (for server-side operations)
+   FIREBASE_PROJECT_ID=your_project_id
+   FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@your_project.iam.gserviceaccount.com
+   FIREBASE_PRIVATE_KEY_ID=your_private_key_id
+   FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
    ```
-5. Set your `NEXT_PUBLIC_FIREBASE_*` vars from your Firebase config, including:
-   - `NEXT_PUBLIC_FIREBASE_API_KEY`
-   - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
-   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
-   - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` (required for Storage functionality)
-   - `NEXT_PUBLIC_FIREBASE_APP_ID`
 
-Need more help? Hit up the `pages/api/session.ts` for cookie management and auth context.
+5. **Deploy Firestore Rules**
+   - The Firestore security rules are in `firestore.rules`
+   - Deploy with: `firebase deploy --only firestore:rules`
+
+6. **Deploy Storage Rules**
+   - The Storage security rules are in `storage.rules`
+   - Deploy with: `firebase deploy --only storage:rules`
+
+For detailed deployment instructions, see `GRANTFAMILYFUNC_SETUP.md` (or create a similar guide for your project).
 
 ---
 
@@ -201,18 +249,19 @@ module.exports = {
 ```bash
 src/
 ├── components/
-│   ├── atoms/          # Button, Input, Label, Avatar
-│   ├── molecules/      # UserCard, LoginForm
-│   └── organisms/      # Header, Footer, Layout
+│   ├── atoms/          # Button, Input, Label, Avatar, Card
+│   ├── molecules/      # UserCard, LoginForm, RSVPForm
+│   └── organisms/      # Layout, LandingPage, EventDetails
 ├── features/           # Domain-driven feature slices
-│   ├── oatmealBowl/   # Teaching example feature
+│   ├── events/        # Event management (create, view, RSVP)
 │   ├── auth/          # Authentication
-│   └── profile/       # User profiles
+│   ├── social/        # Social features
+│   └── oats/          # Oatmeal bowl feature
 ├── store/             # Zustand state management
 ├── firebase/          # clientApp.ts and admin.ts
 ├── hooks/             # Custom React hooks
 ├── pages/             # Next.js pages
-├── styles/            # Tailwind setup
+├── styles/            # Tailwind CSS setup
 └── scripts/           # Generation scripts
 ```
 
@@ -231,25 +280,28 @@ Want your app to follow system preferences or sunset times? You can extend the c
 
 ## 🛣 Roadmap
 
-- 🔜 AI-assisted feature generators with personality
-- 🔌 Preset kits: `lms`, `event-app`, `chatbot-ui`
-- 📦 Feature registry for smart reuse
-- 🧠 One-command MVP spinups
-- 🧪 CI + snapshot testing for UI diffing
-- 🎭 Enhanced character voice throughout codebase
+Potential future features:
+- 📧 Email notifications for RSVP updates
+- 📅 Calendar integration (Google Calendar, iCal)
+- 🎨 Custom event themes and colors
+- 👥 Event co-hosts and permissions
+- 💬 In-app messaging between attendees
+- 📊 Event analytics and attendance tracking
+- 🔗 Social media sharing
+- 📱 Mobile app (React Native)
 
 ---
 
 ## 🤝 Contributing
 
-We'd love your help! File an issue, PR a feature, or write a sarcastic `README` edit. Just remember to keep that oatmeal personality - we're here to teach and entertain.
+Contributions are welcome! Whether you're fixing bugs, adding features, or improving documentation, your help makes Potluck Planner better for everyone.
 
 ---
 
 ## 📄 License
 
-MIT — use it, remix it, rename it to CreamOfWheat if you want. Just don't charge people for it unless you added something amazing.
+MIT — Feel free to use, modify, and distribute as needed.
 
 ---
 
-*Remember: Like oatmeal, good code is simple, nourishing, and endlessly customizable. Don't overcomplicate things - sometimes the simplest solution is the best one.* 🥣✨
+**Potluck Planner** — Making family gatherings easier, one potluck at a time! 🍽️✨

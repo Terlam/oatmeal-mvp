@@ -80,7 +80,7 @@ export const Layout: React.FC<LayoutProps> = ({
                     await logout()
                     router.push('/')
                   }}
-                  className="ml-2 px-3 py-1 bg-blue-600 text-white rounded dark:bg-yellow-500 dark:text-gray-900 transition-colors"
+                  className="ml-2 px-3 py-2 bg-blue-600 text-white rounded dark:bg-yellow-500 dark:text-gray-900 transition-colors min-h-[44px] text-sm sm:text-base"
                 >
                   Sign out
                 </button>
@@ -89,10 +89,11 @@ export const Layout: React.FC<LayoutProps> = ({
               <button
                 onClick={loginWithGoogle}
                 disabled={loading}
-                className="ml-2 px-4 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="ml-2 px-3 sm:px-4 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] text-sm sm:text-base"
               >
                 <FcGoogle size={20} />
-                {loading ? 'Signing in...' : 'Sign in with Google'}
+                <span className="hidden sm:inline">{loading ? 'Signing in...' : 'Sign in with Google'}</span>
+                <span className="sm:hidden">{loading ? 'Signing in...' : 'Sign in'}</span>
               </button>
             )}
             <NavbarToggle />

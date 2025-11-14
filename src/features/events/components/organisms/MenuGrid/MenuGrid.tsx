@@ -1,6 +1,7 @@
 import React from 'react'
 import { MenuItemCard } from '../../molecules/MenuItemCard'
 import type { MenuItem, MenuItemCategory } from '@/features/events/types'
+import type { UserDietaryPreferences } from '@/types/dietary'
 import clsx from 'clsx'
 
 export interface MenuGridProps {
@@ -11,6 +12,7 @@ export interface MenuGridProps {
   onDelete?: (itemId: string) => void
   currentUserId?: string
   isHost?: boolean
+  userDietaryPreferences?: UserDietaryPreferences
   className?: string
   emptyMessage?: string
   groupByCategory?: boolean
@@ -33,6 +35,7 @@ export const MenuGrid: React.FC<MenuGridProps> = ({
   onDelete,
   currentUserId,
   isHost,
+  userDietaryPreferences,
   className,
   emptyMessage = 'No menu items yet.',
   groupByCategory = true,
@@ -58,6 +61,7 @@ export const MenuGrid: React.FC<MenuGridProps> = ({
             onDelete={onDelete}
             currentUserId={currentUserId}
             isHost={isHost}
+            userDietaryPreferences={userDietaryPreferences}
           />
         ))}
       </div>

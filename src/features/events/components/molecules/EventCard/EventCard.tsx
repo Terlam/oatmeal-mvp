@@ -60,7 +60,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, onViewClick, classN
   return (
     <Card
       className={clsx(
-        'p-6 hover:shadow-lg transition-shadow cursor-pointer',
+        'p-4 sm:p-6 hover:shadow-lg transition-shadow cursor-pointer',
         'bg-white dark:bg-gray-800',
         'border-2 border-orange-200 dark:border-orange-800',
         className
@@ -126,7 +126,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, onViewClick, classN
           <Link href={`/events/${event.id}`}>
             <Button
               color="primary"
-              className="bg-orange-500 hover:bg-orange-600 text-white"
+              className="bg-orange-500 hover:bg-orange-600 text-white min-h-[44px] text-sm sm:text-base"
             >
               View Event
             </Button>

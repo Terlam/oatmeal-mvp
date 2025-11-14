@@ -3,12 +3,14 @@ import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage, auth } from '@/firebase/clientApp'
 import { serverTimestamp } from 'firebase/firestore'
+import type { UserDietaryPreferences } from '@/types/dietary'
 
 export interface UpdateProfileData {
   displayName?: string
   username?: string
   photoURL?: string
   avatarFile?: File
+  dietaryPreferences?: UserDietaryPreferences
 }
 
 // Upload avatar image to Firebase Storage
@@ -68,11 +70,29 @@ export const updateUserProfile = async (
     userData.username = data.username.trim() || null
   }
 
+  // Update dietary preferences if provided
+  if (data.dietaryPreferences !== undefined) {
+    userData.dietaryPreferences = data.dietaryPreferences
+  }
+
   if (userDoc.exists()) {
     await setDoc(userRef, userData, { merge: true })
   } else {
     userData.createdAt = serverTimestamp()
     await setDoc(userRef, userData)
   }
+}
+
+// Get user dietary preferences from Firestore
+export const getUserDietaryPreferences = async (userId: string): Promise<UserDietaryPreferences | null> => {
+  const userRef = doc(db, 'users', userId)
+  const userDoc = await getDoc(userRef)
+  
+  if (userDoc.exists()) {
+    const data = userDoc.data()
+    return data.dietaryPreferences || null
+  }
+  
+  return null
 }
 

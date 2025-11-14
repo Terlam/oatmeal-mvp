@@ -53,16 +53,16 @@ export const CommentList: React.FC<CommentListProps> = ({
                 'border border-gray-200 dark:border-gray-700'
               )}
             >
-              <div className="flex space-x-3">
+              <div className="flex items-start space-x-3">
                 <Avatar
                   src={comment.userAvatarUrl || '/user_icon.png'}
                   alt={comment.userName}
-                  className="w-10 h-10"
+                  className="w-10 h-10 flex-shrink-0"
                 />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold text-gray-900 dark:text-white">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-900 dark:text-white truncate">
                         {comment.userName}
                       </p>
                       <p className="text-sm text-gray-500 dark:text-gray-200">
@@ -73,12 +73,13 @@ export const CommentList: React.FC<CommentListProps> = ({
                       </p>
                     </div>
                     {(canEdit || canDelete) && (
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-2 flex-shrink-0">
                         {canEdit && (
                           <Button
                             size="sm"
                             color="light"
                             onClick={() => onEdit?.(comment.id!)}
+                            className="min-h-[44px] min-w-[44px]"
                           >
                             <Edit2 className="w-4 h-4" />
                           </Button>
@@ -88,6 +89,7 @@ export const CommentList: React.FC<CommentListProps> = ({
                             size="sm"
                             color="light"
                             onClick={() => onDelete?.(comment.id!)}
+                            className="min-h-[44px] min-w-[44px]"
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -95,7 +97,7 @@ export const CommentList: React.FC<CommentListProps> = ({
                       </div>
                     )}
                   </div>
-                  <p className="mt-2 text-gray-700 dark:text-gray-300">
+                  <p className="mt-2 text-gray-700 dark:text-gray-300 break-words">
                     {comment.content}
                   </p>
                 </div>

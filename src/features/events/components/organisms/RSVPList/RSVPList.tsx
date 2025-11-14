@@ -61,27 +61,27 @@ export const RSVPList: React.FC<RSVPListProps> = ({
             'border border-gray-200 dark:border-gray-700'
           )}
         >
-          <div className="flex items-center space-x-3">
+          <div className="flex items-start space-x-3">
             <Avatar
               src={rsvp.userAvatarUrl || '/user_icon.png'}
               alt={rsvp.userName}
-              className="w-10 h-10"
+              className="w-10 h-10 flex-shrink-0"
             />
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-gray-900 dark:text-white">
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-gray-900 dark:text-white truncate">
                     {rsvp.userName}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-200">
                     {rsvp.guestCount} {rsvp.guestCount === 1 ? 'guest' : 'guests'}
                   </p>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 flex-shrink-0">
                   {getStatusIcon(rsvp.status)}
                   <span
                     className={clsx(
-                      'px-2 py-1 text-xs font-semibold rounded-full',
+                      'px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap',
                       getStatusColor(rsvp.status)
                     )}
                   >
@@ -90,7 +90,7 @@ export const RSVPList: React.FC<RSVPListProps> = ({
                 </div>
               </div>
               {rsvp.message && (
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-200">
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-200 break-words">
                   {rsvp.message}
                 </p>
               )}

@@ -2,8 +2,11 @@ import React from 'react'
 import { Card } from '@/components/atoms/Card'
 import { Avatar } from '@/components/atoms/Avatar'
 import { Button } from '@/components/atoms/Button'
-import { User, CheckCircle, Circle } from 'lucide-react'
+import { DietaryBadges } from '@/components/molecules/DietaryBadges'
+import { User, CheckCircle, Circle, AlertTriangle } from 'lucide-react'
 import type { MenuItem } from '@/features/events/types'
+import type { UserDietaryPreferences } from '@/types/dietary'
+import { checkDietaryCompatibility, getWarningSeverity } from '@/utils/dietaryMatching'
 import clsx from 'clsx'
 
 export interface MenuItemCardProps {
@@ -14,6 +17,7 @@ export interface MenuItemCardProps {
   onDelete?: (itemId: string) => void
   currentUserId?: string
   isHost?: boolean
+  userDietaryPreferences?: UserDietaryPreferences
   className?: string
 }
 
@@ -25,6 +29,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
   onDelete,
   currentUserId,
   isHost,
+  userDietaryPreferences,
   className,
 }) => {
   const isClaimed = item.isClaimed
@@ -34,6 +39,13 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
   const canDelete = isCreatedByCurrentUser || isHost
   const canClaim = !isClaimed && currentUserId
   const canUnclaim = isClaimed && isClaimedByCurrentUser
+
+  // Check dietary compatibility
+  const compatibility = userDietaryPreferences
+    ? checkDietaryCompatibility(item.dietaryInfo, userDietaryPreferences)
+    : null
+  const warningSeverity = compatibility ? getWarningSeverity(compatibility) : 'none'
+  const showWarning = userDietaryPreferences?.showWarnings !== false && warningSeverity !== 'none'
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -52,16 +64,6 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
     }
   }
 
-  const getDietaryBadges = () => {
-    const badges = []
-    if (item.dietaryInfo?.vegetarian) badges.push('Vegetarian')
-    if (item.dietaryInfo?.vegan) badges.push('Vegan')
-    if (item.dietaryInfo?.glutenFree) badges.push('Gluten Free')
-    if (item.dietaryInfo?.nutFree) badges.push('Nut Free')
-    if (item.dietaryInfo?.dairyFree) badges.push('Dairy Free')
-    return badges
-  }
-
   return (
     <Card
       className={clsx(
@@ -71,6 +73,13 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
         isClaimed
           ? 'border-green-200 dark:border-green-800'
           : 'border-orange-200 dark:border-orange-800',
+        // Add warning border if there are dietary issues
+        showWarning &&
+          warningSeverity === 'high' &&
+          'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20',
+        showWarning &&
+          warningSeverity === 'medium' &&
+          'border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20',
         className
       )}
     >
@@ -120,17 +129,31 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
           </p>
         )}
 
-        {/* Dietary info */}
-        {item.dietaryInfo && getDietaryBadges().length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {getDietaryBadges().map((badge) => (
-              <span
-                key={badge}
-                className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
-              >
-                {badge}
-              </span>
-            ))}
+        {/* Dietary info with compatibility warnings */}
+        {item.dietaryInfo && (
+          <DietaryBadges
+            dietaryInfo={item.dietaryInfo}
+            userDietaryPreferences={userDietaryPreferences}
+            showWarnings={userDietaryPreferences?.showWarnings !== false}
+          />
+        )}
+
+        {/* Warning message for high-severity issues */}
+        {showWarning && warningSeverity === 'high' && compatibility && (
+          <div className="p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">
+                  ⚠️ Contains Allergens
+                </p>
+                <ul className="text-xs text-red-700 dark:text-red-300 list-disc list-inside space-y-1">
+                  {compatibility.warnings.map((warning, idx) => (
+                    <li key={idx}>{warning}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         )}
 
@@ -149,13 +172,14 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-3 border-t border-gray-200 dark:border-gray-700">
           <div className="flex space-x-2">
             {canEdit && (
               <Button
                 size="sm"
                 color="light"
                 onClick={() => onEdit?.(item.id!)}
+                className="min-h-[44px] flex-1 sm:flex-none"
               >
                 Edit
               </Button>
@@ -165,6 +189,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
                 size="sm"
                 color="light"
                 onClick={() => onDelete?.(item.id!)}
+                className="min-h-[44px] flex-1 sm:flex-none"
               >
                 Delete
               </Button>
@@ -174,7 +199,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
             {canClaim && (
               <Button
                 size="sm"
-                className="bg-orange-500 hover:bg-orange-600 text-white"
+                className="bg-orange-500 hover:bg-orange-600 text-white min-h-[44px] flex-1 sm:flex-none"
                 onClick={() => onClaim?.(item.id!)}
               >
                 Claim
@@ -185,6 +210,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
                 size="sm"
                 color="light"
                 onClick={() => onUnclaim?.(item.id!)}
+                className="min-h-[44px] flex-1 sm:flex-none"
               >
                 Unclaim
               </Button>
